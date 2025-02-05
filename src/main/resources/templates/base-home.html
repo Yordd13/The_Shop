@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Aubrey" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: rgb(111,144,157);
+            background: linear-gradient(90deg, rgba(111,144,157,1) 17%, rgba(187,220,237,1) 100%);
+            background-size: cover;
+            font-family: 'Aubrey', Arial, sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: "The Shop";
+            position: absolute;
+            top: 43%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 170px;
+            color: #3b4cc9;
+            white-space: nowrap;
+            z-index: 1;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            margin-top: 200px;
+        }
+
+        .container button {
+            width: 150px;
+            padding: 10px 20px;
+            margin: 15px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #4e03fc;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .container button:hover {
+            background-color: #7a45f5;
+        }
+
+        .container a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a th:href="@{/register}"><button>Register</button></a>
+    <a th:href="@{/login}"><button>Login</button></a>
+</div>
+</body>
+</html>

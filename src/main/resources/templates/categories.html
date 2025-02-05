@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalog Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* Navigation Bar */
+        nav {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .profile-picture {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        nav h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 30px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Horizontal Line */
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #ccc;
+            margin: 0;
+        }
+
+        /* Main Content */
+        main {
+            padding: 20px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .catalog {
+            background-color: #fff;
+            margin-bottom: 20px;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .catalog-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+        }
+
+        .item {
+            background-color: #e2e2e2;
+            padding: 15px;
+            border-radius: 8px;
+            width: 280px;
+            height: 320px;
+            box-sizing: border-box;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .item img {
+            width: 200px;
+            height: 200px;
+            border-radius: 5px;
+            object-fit: cover;
+        }
+
+        .item h3 {
+            margin: 15px 0 8px;
+            font-size: 20px;
+        }
+
+        .item p {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <div class="nav-left">
+        <h1>THE SHOP</h1>
+    </div>
+    <div class="nav-right">
+        <ul>
+            <li><a href="#">Categories</a></li>
+            <li><a href="#">Order</a></li>
+        </ul>
+        <img th:src="${user.profilePictureUrl}" alt="Profile Picture" class="profile-picture">
+    </div>
+</nav>
+
+<hr>
+
+<main>
+    <section class="catalog">
+        <h2>CATEGORIES</h2>
+        <div class="catalog-items">
+            <div class="item" th:each="category : ${categoryList}">
+                <img th:src="${category.categoryPictureUrl}" alt="Category Image">
+                <h3 th:text="${#strings.capitalize(category.categoryName.toLowerCase())}">Category Name</h3>
+                <p th:text="'Items count: ' + ${#lists.size(category.products)}">Items count</p>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>
