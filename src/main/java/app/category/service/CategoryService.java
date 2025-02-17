@@ -21,4 +21,9 @@ public class CategoryService {
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
+
+    public void addCategory(String categoryName, String categoryPictureUrl, String description) {
+        Category category = new Category(categoryName, categoryPictureUrl, description);
+        categoryRepository.save(category);
+    }
 }

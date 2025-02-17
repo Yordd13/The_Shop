@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.UUID;
+
 
 @Controller
 @RequestMapping("/")
@@ -79,5 +81,18 @@ public class IndexController {
         session.setAttribute("user_id", login.getId());
 
         return "redirect:/categories";
+    }
+
+    @GetMapping("/categories")
+    public ModelAndView getCategoryPage(HttpSession session) {
+
+        UUID id = (UUID) session.getAttribute("user_id");
+        User user = userService.getById(id);
+
+        ModelAndView modelAndView = new ModelAndView("categories");
+        modelAndView.addObject("user", user);
+        modelAndView.addObject("categoryList",categoryService.getAllCategories());
+
+        return modelAndView;
     }
 }

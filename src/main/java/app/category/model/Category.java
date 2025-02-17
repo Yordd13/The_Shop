@@ -15,6 +15,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 public class Category {
+
+    public Category(String categoryName, String categoryPictureUrl, String description) {
+        this.categoryName = categoryName;
+        this.categoryPictureUrl = categoryPictureUrl;
+        this.description = description;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
