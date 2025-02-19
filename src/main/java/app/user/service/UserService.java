@@ -1,10 +1,10 @@
 package app.user.service;
 
+import app.security.AuthenticationDetails;
 import app.exception.DomainException;
 import app.user.model.User;
 import app.user.model.UserRole;
 import app.user.repository.UserRepository;
-import app.web.dto.LoginRequest;
 import app.web.dto.RegisterRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -56,23 +55,6 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public User login(LoginRequest loginRequest) {
-        Optional<User> userOptional = userRepository.findByEmail(loginRequest.getEmail());
-
-        if(userOptional.isEmpty()) {
-            throw new DomainException("Email [%s] is not correct.".formatted(loginRequest.getEmail()));
-        }
-
-        if(!passwordEncoder.matches(loginRequest.getPassword(), userOptional.get().getPassword())) {
-            throw new DomainException("Password is not correct.");
-        }
-
-        User user = userOptional.get();
-
-        log.info("Username [{}] has logged in.", user.getUsername());
-
-        return user;
-    }
 
     private User initilizeUser(RegisterRequest registerRequest) {
 
@@ -90,15 +72,17 @@ public class UserService implements UserDetailsService {
     }
 
     public User getById(UUID id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id).orElseThrow(() ->
+                new DomainException("User with this id not found!"));
     }
 
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new DomainException("User with this username doesn't exist."));
 
-
-        return null;
+        return new AuthenticationDetails(user.getId(),email,user.getPassword(),user.getRole(),user.isActive());
     }
 }

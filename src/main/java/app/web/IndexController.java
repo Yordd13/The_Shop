@@ -1,22 +1,24 @@
 package app.web;
 
+import app.category.model.Category;
 import app.category.service.CategoryService;
 import app.products.service.ProductService;
+import app.security.AuthenticationDetails;
 import app.user.model.User;
 import app.user.service.UserService;
-import app.web.dto.LoginRequest;
 import app.web.dto.RegisterRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.UUID;
+import java.util.List;
 
 
 @Controller
@@ -63,35 +65,28 @@ public class IndexController {
 
 
     @GetMapping("/login")
-    public ModelAndView getLogin() {
+    public ModelAndView getLogin(@RequestParam(value = "error", required = false) String error) {
 
         ModelAndView modelAndView = new ModelAndView("login");
-        modelAndView.addObject("loginRequest", new LoginRequest());
+
+        if(error != null) {
+            modelAndView.addObject("errorMessage", "Incorrect email or password!");
+        }
 
         return modelAndView;
     }
 
-    @PostMapping("/login")
-    public String postLogin(@Valid LoginRequest loginRequest, BindingResult bindingResult, HttpSession session) {
-        if (bindingResult.hasErrors()) {
-            return "login";
-        }
-
-        User login = userService.login(loginRequest);
-        session.setAttribute("user_id", login.getId());
-
-        return "redirect:/categories";
-    }
 
     @GetMapping("/categories")
-    public ModelAndView getCategoryPage(HttpSession session) {
+    public ModelAndView getCategoryPage(@AuthenticationPrincipal AuthenticationDetails authenticationDetails) {
 
-        UUID id = (UUID) session.getAttribute("user_id");
-        User user = userService.getById(id);
+        User user = userService.getById(authenticationDetails.getUserId());
+
+        List<Category> categories = categoryService.getAllCategories();
 
         ModelAndView modelAndView = new ModelAndView("categories");
         modelAndView.addObject("user", user);
-        modelAndView.addObject("categoryList",categoryService.getAllCategories());
+        modelAndView.addObject("categoryList",categories);
 
         return modelAndView;
     }

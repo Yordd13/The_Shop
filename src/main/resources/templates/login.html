@@ -93,16 +93,15 @@
 <body>
 <div class="login-container">
     <h2>Login</h2>
-    <form th:action="@{/login}" method="post" th:object="${loginRequest}">
+    <form th:action="@{/login}" th:method="post" >
+        <p class="alert-warning" th:if="${errorMessage}" th:text="${errorMessage}"></p>
         <div class="input-group">
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" th:field="*{email}" required>
-            <p class="alert-warning" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+            <input type="email" id="email" name="email" required>
         </div>
         <div class="input-group">
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" th:field="*{password}" required>
-            <p class="alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{email}"></p>
+            <input type="password" id="password" name="password" required>
         </div>
         <button type="submit" class="login-button">Login</button>
     </form>
