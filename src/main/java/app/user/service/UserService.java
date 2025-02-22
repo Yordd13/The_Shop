@@ -85,4 +85,9 @@ public class UserService implements UserDetailsService {
 
         return new AuthenticationDetails(user.getId(),email,user.getPassword(),user.getRole(),user.isActive());
     }
+
+    public User getByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() ->
+                new DomainException("User with this id not found!"));
+    }
 }

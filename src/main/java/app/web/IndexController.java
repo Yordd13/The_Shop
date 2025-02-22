@@ -38,7 +38,7 @@ public class IndexController {
 
     @GetMapping
     public String getBaseHome() {
-        return "base-home";
+        return "index";
     }
 
     @GetMapping("/register")
