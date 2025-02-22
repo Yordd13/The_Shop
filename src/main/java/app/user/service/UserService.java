@@ -31,7 +31,7 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User register(RegisterRequest registerRequest) {
+    public void register(RegisterRequest registerRequest) {
 
         Optional<User> userOptionalUsername = userRepository.findByUsername(registerRequest.getUsername());
 
@@ -50,9 +50,6 @@ public class UserService implements UserDetailsService {
 
         log.info("Username [{}] has been created.", user.getUsername());
 
-
-
-        return user;
     }
 
 
