@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catalog Page</title>
+    <title th:text="${#strings.capitalize(category.categoryName.toLowerCase())}"></title>
     <link rel="stylesheet" href="/css/navbar.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
+            margin: 100px 0 0;
             padding: 0;
             background-color: #f4f4f4;
         }
@@ -18,26 +18,20 @@
         main {
             padding: 20px 40px;
             max-width: 1200px;
-            margin: 100px auto 0;
+            margin: 0 auto;
         }
 
-
-        .catalog {
-            background-color: #fff;
-            margin-bottom: 20px;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        .category {
+            margin-bottom: 40px;
         }
 
-        .catalog h2 {
+        .category h2 {
             text-align: center;
-            font-size: 30px;
+            font-size: 24px;
             margin-bottom: 20px;
         }
 
-
-        .catalog-items {
+        .category-items {
             display: flex;
             flex-wrap: wrap;
             gap: 25px;
@@ -83,13 +77,23 @@
 <header th:replace="~{fragments/navbar::nav}"></header>
 
 <main>
-    <section class="catalog">
-        <h2>CATEGORIES</h2>
-        <div class="catalog-items">
-            <div class="item" th:each="category : ${categoryList}">
-                <img th:src="${category.categoryPictureUrl}" alt="Category Image">
-                <h3 th:text="${#strings.capitalize(category.categoryName.toLowerCase())}">Category Name</h3>
-                <p th:text="'Items count: ' + ${#lists.size(category.products)}">Items count</p>
+    <section class="category">
+        <h2>Category 1</h2>
+        <div class="category-items">
+            <div class="item">
+                <img src="https://via.placeholder.com/200" alt="Item 1">
+                <h3>Item Name 1</h3>
+                <p>$10</p>
+            </div>
+            <div class="item">
+                <img src="https://via.placeholder.com/200" alt="Item 2">
+                <h3>Item Name 2</h3>
+                <p>$10</p>
+            </div>
+            <div class="item">
+                <img src="https://via.placeholder.com/200" alt="Item 3">
+                <h3>Item Name 3</h3>
+                <p>$10</p>
             </div>
         </div>
     </section>

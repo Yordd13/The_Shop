@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalog Page</title>
+    <link rel="stylesheet" href="/css/navbar.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+<body>
+
+<header th:replace="~{fragments/navbar::nav}"></header>
+
+<main>
+    <section class="catalog">
+        <h2>CATEGORIES</h2>
+        <div class="catalog-items">
+
+            <a th:href="@{'/categories/'+ ${category.categoryName.toLowerCase()}}" th:each="category : ${categoryList}">
+                <div class="item" >
+                    <img th:src="${category.categoryPictureUrl}" alt="Category Image">
+                    <h3 th:text="${#strings.capitalize(category.categoryName.toLowerCase())}">Category Name</h3>
+                    <p th:text="'Items count: ' + ${#lists.size(category.products)}">Items count</p>
+                </div>
+            </a>
+        </div>
+    </section>
+</main>
+</body>
+</html>

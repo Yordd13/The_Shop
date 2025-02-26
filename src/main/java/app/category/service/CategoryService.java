@@ -26,4 +26,8 @@ public class CategoryService {
         Category category = new Category(categoryName, categoryPictureUrl, description);
         categoryRepository.save(category);
     }
+
+    public Category getByName(String name) {
+        return categoryRepository.getByCategoryName(name);
+    }
 }

@@ -84,7 +84,7 @@ public class IndexController {
 
         List<Category> categories = categoryService.getAllCategories();
 
-        ModelAndView modelAndView = new ModelAndView("categories");
+        ModelAndView modelAndView = new ModelAndView("home");
         modelAndView.addObject("user", user);
         modelAndView.addObject("categoryList",categories);
 
