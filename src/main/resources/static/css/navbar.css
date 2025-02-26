@@ -13,45 +13,88 @@ nav {
     z-index: 1000;
 }
 
-.nav-left {
-    display: flex;
-    align-items: center;
-    gap: 20px;
+/* Left side: Logo */
+.nav-left a {
+    text-decoration: none;
+    color: #fff;
 }
 
-.nav-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.profile-picture {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-nav h1 {
+.nav-left h1 {
     margin: 0;
     font-size: 28px;
 }
 
-nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+/* Right side: Navigation */
+.nav-right {
     display: flex;
-    gap: 30px;
+    align-items: center;
+    gap: 60px;
+    font-size: 24px;
 }
 
-nav ul li a {
-    color: #fff;
+/* Move first two items (Categories & Order) to the left */
+.nav-right ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: 60px;
+    margin: 0 auto 0 0;
+}
+
+/* Align items in <ul> */
+.nav-right ul li {
+    display: flex;
+    align-items: center;
+}
+
+/* Style nav links */
+.nav-right ul li a {
     text-decoration: none;
+    color: #fff;
     font-size: 20px;
     font-weight: 500;
 }
 
-nav ul li a:hover {
+.nav-right ul li a:hover {
     text-decoration: underline;
+}
+
+/* Group Profile Picture & Logout Button Closer */
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Reduce spacing between profile picture and logout */
+}
+
+.user-actions a{
+    display: flex;
+    align-items: center;
+}
+
+/* Profile Picture */
+.profile-picture {
+    max-width: 40px;
+    max-height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Logout Button */
+.logout-form {
+    margin: 0;
+    padding: 0;
+}
+
+.logout-form button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.logout-form button:hover {
+    color: #ff4d4d; /* Red color on hover */
 }

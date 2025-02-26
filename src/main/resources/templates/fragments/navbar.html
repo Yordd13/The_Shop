@@ -5,20 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>THE SHOP</title>
     <link rel="stylesheet" href="/css/navbar.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
 <nav>
     <div class="nav-left">
-        <h1>TITLE OF THE SITE</h1>
+        <a th:href="@{/categories}">
+            <h1>THE SHOP</h1>
+        </a>
     </div>
     <div class="nav-right">
         <ul>
             <li><a th:href="@{/categories}">Categories</a></li>
             <li><a href="#">Order</a></li>
         </ul>
-        <a th:href="@{'/users/profile/' + ${user.username}}">
-            <img th:src="${user.profilePictureUrl}" alt="Profile Picture" class="profile-picture">
-        </a>
+        <div class="user-actions">
+            <a th:href="@{'/users/profile/' + ${user.username}}">
+                <img th:src="${user.profilePictureUrl}" alt="Profile Picture" class="profile-picture">
+            </a>
+            <form th:action="@{/logout}" method="get" class="logout-form">
+                <button type="submit">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </form>
+        </div>
     </div>
 </nav>
 </body>
