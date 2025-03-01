@@ -36,7 +36,7 @@ public class Product {
     private String description;
 
     @Column(nullable = false)
-    private String imagePicture; //url
+    private String image; //url
 
     @ManyToOne
     private User seller;

@@ -27,7 +27,7 @@
 
         .category h2 {
             text-align: center;
-            font-size: 24px;
+            font-size: 28px;
             margin-bottom: 20px;
         }
 
@@ -70,6 +70,13 @@
             color: #333;
             font-weight: bold;
         }
+        a{
+            text-decoration: none;
+            color: #000;
+        }
+        a:hover{
+            color: #ff4d4d;
+        }
     </style>
 </head>
 <body>
@@ -78,23 +85,15 @@
 
 <main>
     <section class="category">
-        <h2>Category 1</h2>
+        <h2 th:text="${#strings.capitalize(category.categoryName.toLowerCase())}"></h2>
         <div class="category-items">
-            <div class="item">
-                <img src="https://via.placeholder.com/200" alt="Item 1">
-                <h3>Item Name 1</h3>
-                <p>$10</p>
-            </div>
-            <div class="item">
-                <img src="https://via.placeholder.com/200" alt="Item 2">
-                <h3>Item Name 2</h3>
-                <p>$10</p>
-            </div>
-            <div class="item">
-                <img src="https://via.placeholder.com/200" alt="Item 3">
-                <h3>Item Name 3</h3>
-                <p>$10</p>
-            </div>
+            <a th:href="@{'/products/'+${item.id}}" th:each="item : ${products}">
+                <div class="item">
+                    <img th:src="${item.image}" alt="Item image">
+                    <h3 th:text="${item.name}"></h3>
+                    <p th:text="${item.price}"></p>
+                </div>
+            </a>
         </div>
     </section>
 </main>
