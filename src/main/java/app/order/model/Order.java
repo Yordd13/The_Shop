@@ -27,7 +27,8 @@ public class Order {
     @ManyToOne
     private User buyer;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "order_id")
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @Column(nullable = false)

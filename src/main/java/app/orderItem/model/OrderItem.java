@@ -23,9 +23,6 @@ public class OrderItem {
     private UUID id;
 
     @ManyToOne
-    private Order order;
-
-    @ManyToOne
     private Product product;
 
     @ManyToOne

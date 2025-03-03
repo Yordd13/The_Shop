@@ -160,7 +160,9 @@
             </div>
             <div class="right-footer">
                 <div class="stock">In stock: <span th:text="${product.quantity}"></span></div>
-                <button class="buy">BUY</button>
+                <form th:action="@{'/products/' + ${product.id} + '/add'}" method="post">
+                    <button type="submit" class="buy">BUY</button>
+                </form>
             </div>
         </div>
 

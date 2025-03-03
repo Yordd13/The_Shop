@@ -88,6 +88,21 @@
         .quantity-control .increase {
             background: green;
         }
+        .product-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .product-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .stock-info {
+            font-size: 14px;
+            color: #555;
+        }
     </style>
 </head>
 <body>
@@ -97,32 +112,30 @@
     <table>
         <thead>
         <tr>
-            <th>NAME</th>
+            <th>PRODUCT</th>
             <th>SELLER</th>
             <th>QUANTITY</th>
             <th>PRICE</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>Product A</td>
-            <td>Seller X</td>
-            <td class="quantity-control">
-                <button class="decrease">-</button>
-                <span>2</span>
-                <button class="increase">+</button>
+        <tr th:each="item : ${orderItems}">
+            <td>
+                <div class="product-info">
+                    <img th:src="${item.product.image}" alt="Product Image" class="product-image">
+                    <span th:text="${item.product.name}"></span>
+                </div>
             </td>
-            <td>$50</td>
-        </tr>
-        <tr>
-            <td>Product B</td>
-            <td>Seller Y</td>
-            <td class="quantity-control">
-                <button class="decrease">-</button>
-                <span>1</span>
-                <button class="increase">+</button>
+            <td th:text="${item.product.seller.username}"></td>
+            <td>
+                <div class="quantity-control">
+                    <button class="decrease">-</button>
+                    <span th:text="${item.quantity}"></span>
+                    <button class="increase">+</button>
+                </div>
+                <div class="stock-info" th:text="'In Stock: ' + ${item.product.quantity}"></div>
             </td>
-            <td>$50</td>
+            <td th:text="${'$' + item.product.price}"></td>
         </tr>
         </tbody>
     </table>
