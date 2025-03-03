@@ -21,11 +21,7 @@ public class OrderItemService {
 
     public void addNewOrderItem(User user, Product product) {
 
-        if (product.getQuantity() <= 0) {
-            throw new IllegalStateException("Product is out of stock.");
-        }
-
-        orderItemRepository.findByProductId(product.getId())
+        orderItemRepository.findByProductIdAndUserId(product.getId(), user.getId())
                 .ifPresentOrElse(
                         orderItem -> {
                             if (orderItem.getQuantity() + 1 > product.getQuantity()) {
@@ -35,6 +31,9 @@ public class OrderItemService {
                             orderItemRepository.save(orderItem);
                         },
                         () -> {
+                            if (product.getQuantity() <= 0) {
+                                throw new IllegalStateException("Cannot create order item: product is out of stock.");
+                            }
                             OrderItem newOrderItem = OrderItem.builder()
                                     .user(user)
                                     .product(product)
@@ -43,5 +42,6 @@ public class OrderItemService {
                             orderItemRepository.save(newOrderItem);
                         }
                 );
+
     }
 }
