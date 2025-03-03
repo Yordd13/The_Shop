@@ -3,6 +3,7 @@ package app.orderItem.model;
 
 import app.order.model.Order;
 import app.products.model.Product;
+import app.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,6 +27,9 @@ public class OrderItem {
 
     @ManyToOne
     private Product product;
+
+    @ManyToOne
+    private User user;
 
     @Column(nullable = false)
     private int quantity;

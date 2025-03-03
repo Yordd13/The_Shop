@@ -1,6 +1,7 @@
 package app.user.model;
 
 import app.order.model.Order;
+import app.orderItem.model.OrderItem;
 import app.products.model.Product;
 import jakarta.persistence.*;
 import lombok.*;
@@ -58,4 +59,7 @@ public class User {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "buyer")
     private List<Order> orders = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    private List<OrderItem> orderItems = new ArrayList<>();
 }

@@ -17,7 +17,12 @@
     <div class="nav-right">
         <ul>
             <li><a th:href="@{/categories}">Categories</a></li>
-            <li><a href="#">Order</a></li>
+            <li>
+                <a href="#" class="shopping-cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" th:text="${#lists.size(user.orderItems)}"></span>
+                </a>
+            </li>
         </ul>
         <div class="user-actions">
             <a th:href="@{'/users/profile/' + ${user.username}}">

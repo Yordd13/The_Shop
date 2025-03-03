@@ -98,3 +98,29 @@ nav {
 .logout-form button:hover {
     color: #ff4d4d; /* Red color on hover */
 }
+
+/* Shopping Cart Icon */
+.shopping-cart {
+    position: relative;
+    text-decoration: none;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.shopping-cart:hover {
+    color: #ff4d4d;
+}
+
+/* Green Circle for Cart Count */
+.cart-count {
+    position: absolute;
+    top: 15px; /* Adjust as needed */
+    right: -10px; /* Adjust as needed */
+    background-color: green;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: bold;
+}
