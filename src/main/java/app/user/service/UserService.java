@@ -6,6 +6,8 @@ import app.user.model.User;
 import app.user.model.UserRole;
 import app.user.repository.UserRepository;
 import app.web.dto.RegisterRequest;
+import app.web.dto.UserEditRequest;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -86,5 +88,14 @@ public class UserService implements UserDetailsService {
     public User getByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() ->
                 new DomainException("User with this id not found!"));
+    }
+
+    public void editUserProfile(User user, UserEditRequest userEditRequest) {
+        user.setFirstName(userEditRequest.getFirstName());
+        user.setLastName(userEditRequest.getLastName());
+        user.setProfilePictureUrl(userEditRequest.getProfilePicture());
+        user.setUpdatedOn(LocalDateTime.now());
+
+        userRepository.save(user);
     }
 }

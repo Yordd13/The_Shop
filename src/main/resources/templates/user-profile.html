@@ -90,11 +90,6 @@
             background-color: #005bb5;
         }
 
-        .actions {
-            margin-top: 20px;
-            text-align: right;
-        }
-
         .actions a {
             margin: 0 10px;
             text-decoration: none;
@@ -116,15 +111,17 @@
         <p th:text="${user.username}"></p>
     </div>
     <div class="user-info">
-        <p><strong>First Name:</strong> <span th:text="${user.firstName}">John</span></p>
-        <p><strong>Last Name:</strong> <span th:text="${user.lastName}">Doe</span></p>
-        <p><strong>Email:</strong> <span th:text="${user.email}">john.doe@example.com</span></p>
+        <p><strong>First Name:</strong> <span th:text="${user.firstName}"></span></p>
+        <p><strong>Last Name:</strong> <span th:text="${user.lastName}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
     </div>
     <div class="last-updated">
         <strong>Last Updated On:</strong>
         <span th:text="${#temporals.format(user.updatedOn, 'MMMM dd, yyyy, hh:mm a')}"></span>
     </div>
-    <button class="edit-button">Edit</button>
+    <a th:href="@{/users/profile/edit}">
+        <button class="edit-button">Edit</button>
+    </a>
 </div>
 
 <section>

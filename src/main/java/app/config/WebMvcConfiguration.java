@@ -29,7 +29,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                         .loginPage("/login")
                         .usernameParameter("email")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/categories")
+                        .defaultSuccessUrl("/categories",true)
                         .failureUrl("/login?error")
                         .permitAll()
                 )
