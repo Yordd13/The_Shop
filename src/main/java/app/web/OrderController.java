@@ -1,6 +1,7 @@
 package app.web;
 
 import app.orderItem.model.OrderItem;
+import app.orderItem.service.OrderItemService;
 import app.products.service.ProductService;
 import app.security.AuthenticationDetails;
 import app.user.model.User;
@@ -9,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/order")
@@ -20,11 +23,13 @@ public class OrderController {
 
     private final UserService userService;
     private final ProductService productService;
+    private final OrderItemService orderItemService;
 
     @Autowired
-    public OrderController(UserService userService, ProductService productService) {
+    public OrderController(UserService userService, ProductService productService, OrderItemService orderItemService) {
         this.userService = userService;
         this.productService = productService;
+        this.orderItemService = orderItemService;
     }
 
     @GetMapping
@@ -38,5 +43,21 @@ public class OrderController {
         mav.addObject("orderItems", orderItems);
 
         return mav;
+    }
+
+    @GetMapping("/{orderItemId}/increase")
+    public String increaseQuantity(@PathVariable UUID orderItemId){
+
+        orderItemService.increaseQuantity(orderItemId);
+
+        return "redirect:/order";
+    }
+
+    @GetMapping("/{orderItemId}/decrease")
+    public String decreaseQuantity(@PathVariable UUID orderItemId){
+
+        orderItemService.decreaseQuantity(orderItemId);
+
+        return "redirect:/order";
     }
 }

@@ -1,5 +1,6 @@
 package app.orderItem.service;
 
+import app.exception.DomainException;
 import app.orderItem.model.OrderItem;
 import app.orderItem.repository.OrderItemRepository;
 import app.products.model.Product;
@@ -7,7 +8,7 @@ import app.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class OrderItemService {
@@ -43,5 +44,29 @@ public class OrderItemService {
                         }
                 );
 
+    }
+
+    public OrderItem getOrderItem(UUID id) {
+        return orderItemRepository.findById(id).orElseThrow(()
+                -> new DomainException("Cannot find order item with id: " + id));
+    }
+
+    public void increaseQuantity(UUID orderItemId) {
+        OrderItem orderItem = getOrderItem(orderItemId);
+        if(orderItem.getQuantity() < orderItem.getProduct().getQuantity()) {
+            orderItem.setQuantity(orderItem.getQuantity() + 1);
+        }
+        orderItemRepository.save(orderItem);
+    }
+
+    public void decreaseQuantity(UUID orderItemId) {
+        OrderItem orderItem = getOrderItem(orderItemId);
+        if(orderItem.getQuantity() > 1){
+            orderItem.setQuantity(orderItem.getQuantity() - 1);
+            orderItemRepository.save(orderItem);
+            return;
+        }
+
+        orderItemRepository.delete(orderItem);
     }
 }

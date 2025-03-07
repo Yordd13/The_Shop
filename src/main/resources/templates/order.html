@@ -129,9 +129,13 @@
             <td th:text="${item.product.seller.username}"></td>
             <td>
                 <div class="quantity-control">
-                    <button class="decrease">-</button>
+                    <a th:href="@{'order/'+${item.id} + '/decrease'}">
+                        <button class="decrease">-</button>
+                    </a>
                     <span th:text="${item.quantity}"></span>
-                    <button class="increase">+</button>
+                    <a th:href="@{'order/'+${item.id} + '/increase'}">
+                        <button class="increase">+</button>
+                    </a>
                 </div>
                 <div class="stock-info" th:text="'In Stock: ' + ${item.product.quantity}"></div>
             </td>
