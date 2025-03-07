@@ -62,7 +62,7 @@
 </head>
 <body>
 <div class="form-container">
-  <form th:action="@{/register}" method="post" th:object="${registerRequest}">
+  <form th:action="@{/register}" th:method="post" th:object="${registerRequest}">
     <!-- Username Input -->
     <div class="form-group mb-3">
       <label for="exampleInputUsername">Username</label>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product</title>
+    <link rel="stylesheet" href="/css/navbar.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .edit-product {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            min-width: 44%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .edit-product h2 {
+            text-align: center;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            font-size: 18px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-save {
+            background-color: #007BFF;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background-color: #005bb5;
+        }
+
+        .text-warning {
+            color: #ff0000;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<header th:replace="~{fragments/navbar::nav}"></header>
+
+<div class="edit-product">
+    <h2>New Product</h2>
+    <form th:action="@{'/products'}" th:method="POST" th:object="${newProductRequest}">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter product name" th:field="*{name}" required>
+            <p class="text-warning" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" placeholder="Enter product description" th:field="*{description}" required></textarea>
+            <p class="text-warning" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
+        </div>
+        <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" step="0.01" placeholder="Enter product price" th:field="*{price}" required>
+            <p class="text-warning" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></p>
+        </div>
+        <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" placeholder="Enter product quantity" th:field="*{quantity}" required>
+            <p class="text-warning" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></p>
+        </div>
+        <div class="form-group">
+            <label for="category">Category:</label>
+            <select id="category" name="category" th:field="*{category}">
+                <option value="" disabled selected>Select a category</option>
+                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.categoryName}"></option>
+            </select>
+            <p class="text-warning" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></p>
+        </div>
+        <div class="form-group">
+            <label for="image">Image URL:</label>
+            <input type="text" id="image" name="image" placeholder="Enter product image URL" th:field="*{image}" required>
+            <p class="text-warning" th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></p>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-save">Save Changes</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

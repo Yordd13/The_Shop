@@ -91,7 +91,7 @@
                 <div class="item">
                     <img th:src="${item.image}" alt="Item image">
                     <h3 th:text="${item.name}"></h3>
-                    <p th:text="${item.price}"></p>
+                    <p th:text="'$' + ${item.price}"></p>
                 </div>
             </a>
         </div>

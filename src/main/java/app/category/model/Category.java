@@ -35,6 +35,6 @@ public class Category {
     @Column(nullable = false)
     private String categoryPictureUrl;
 
-    @ManyToMany(mappedBy = "categories", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
     private List<Product> products = new ArrayList<>();
 }

@@ -99,4 +99,11 @@ public class UserService implements UserDetailsService {
 
         userRepository.save(user);
     }
+
+    public void addSellerRole(User user) {
+        if(!user.getRoles().contains(UserRole.SELLER)){
+            user.getRoles().add(UserRole.SELLER);
+            userRepository.save(user);
+        }
+    }
 }

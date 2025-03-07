@@ -6,6 +6,8 @@ import app.exception.DomainException;
 import app.products.model.Product;
 import app.products.repository.ProductRepository;
 import app.user.model.User;
+import app.web.dto.NewProductRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,19 +36,20 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public void addProduct(String name, BigDecimal price, int quantity, String description, String image, User seller, Category category) {
+    public void addNewProduct(NewProductRequest newProductRequest, User user) {
         Product product = Product
                 .builder()
-                .name(name)
-                .price(price)
-                .quantity(quantity)
-                .description(description)
-                .image(image)
-                .seller(seller)
+                .name(newProductRequest.getName())
+                .description(newProductRequest.getDescription())
                 .listedOn(LocalDateTime.now())
                 .updatedOn(LocalDateTime.now())
-                .categories(List.of(category))
+                .price(newProductRequest.getPrice())
+                .image(newProductRequest.getImage())
+                .category(newProductRequest.getCategory())
+                .quantity(newProductRequest.getQuantity())
+                .seller(user)
                 .build();
+
         productRepository.save(product);
     }
 }
