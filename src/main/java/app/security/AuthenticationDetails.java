@@ -3,11 +3,11 @@ package app.security;
 import app.user.model.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -19,15 +19,16 @@ public class AuthenticationDetails implements UserDetails {
     private UUID userId;
     private String email;
     private String password;
-    private UserRole userRole;
+    private List<UserRole> roles;
     private boolean isActive;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + userRole.name());
-
-        return List.of(authority);
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (UserRole role : roles) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        }
+        return authorities;
     }
 
     @Override

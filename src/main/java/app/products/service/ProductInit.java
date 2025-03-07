@@ -32,7 +32,7 @@ public class ProductInit implements CommandLineRunner {
             return;
         }
 
-        User user = userService.getById(UUID.fromString("7a128cf0-fe6e-4f01-9ceb-fc90da2ab7e1"));
+        User user = userService.getById(UUID.fromString("74d2c844-2edd-4f45-8d7f-becea36989a7"));
 
         Category category = categoryService.getByName("TOYS");
 

@@ -40,7 +40,6 @@ public class UserController {
     @GetMapping("/profile/edit")
     public ModelAndView updateProfile(@AuthenticationPrincipal AuthenticationDetails authenticationDetails) {
 
-        System.out.println();
         User user = userService.getById(authenticationDetails.getUserId());
 
         ModelAndView mav = new ModelAndView("edit-profile");

@@ -38,9 +38,11 @@ public class User {
 
     private String profilePictureUrl;
 
-    @Column(nullable = false)
+    @ElementCollection(targetClass = UserRole.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
-    private UserRole role;
+    @Column(name = "role", nullable = false)
+    private List<UserRole> roles;
 
     @Column(nullable = false)
     private boolean isActive;

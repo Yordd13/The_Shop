@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -61,7 +62,7 @@ public class UserService implements UserDetailsService {
                 .username(registerRequest.getUsername())
                 .email(registerRequest.getEmail())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
-                .role(UserRole.USER)
+                .roles(List.of(UserRole.USER))
                 .profilePictureUrl("https://cdn.pixabay.com/photo/2018/11/13/21/43/avatar-3814049_1280.png")
                 .isActive(true)
                 .isBannedFromSelling(false)
@@ -82,7 +83,7 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new DomainException("User with this username doesn't exist."));
 
-        return new AuthenticationDetails(user.getId(),email,user.getPassword(),user.getRole(),user.isActive());
+        return new AuthenticationDetails(user.getId(),email,user.getPassword(),user.getRoles(),user.isActive());
     }
 
     public User getByUsername(String username) {
