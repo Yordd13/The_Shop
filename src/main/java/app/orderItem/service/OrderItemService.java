@@ -8,6 +8,8 @@ import app.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -68,5 +70,15 @@ public class OrderItemService {
         }
 
         orderItemRepository.delete(orderItem);
+    }
+
+    public BigDecimal getTotalPrice(List<OrderItem> orderItems) {
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        for (OrderItem orderItem : orderItems) {
+            totalPrice = totalPrice
+                    .add(orderItem.getProduct().getPrice()
+                            .multiply(BigDecimal.valueOf(orderItem.getQuantity())));
+        }
+        return totalPrice;
     }
 }

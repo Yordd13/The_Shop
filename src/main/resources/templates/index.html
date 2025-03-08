@@ -1,75 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Aubrey" />
     <style>
-        * {
+        body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
+            background: url('/images/online-shopping-4532460.jpg') no-repeat center center/cover;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background: rgb(111,144,157);
-            background: linear-gradient(90deg, rgba(111,144,157,1) 17%, rgba(187,220,237,1) 100%);
-            background-size: cover;
-            font-family: 'Aubrey', Arial, sans-serif;
-            position: relative;
-            overflow: hidden;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        body::before {
-            content: "The Shop";
+        .title {
             position: absolute;
-            top: 43%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 170px;
-            color: #3b4cc9;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 100px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff4500, #ff1493, #ffdd57, #32cd32, #1e90ff, #8a2be2, #ff6347);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             white-space: nowrap;
-            z-index: 1;
         }
 
-        .container {
-            text-align: center;
-            position: relative;
-            z-index: 2;
-            margin-top: 200px;
+        .home-actions {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 16px;
         }
 
-        .container button {
-            width: 150px;
-            padding: 10px 20px;
-            margin: 15px;
-            font-size: 16px;
-            color: #fff;
-            background-color: #4e03fc;
+        .btn {
+            padding: 12px 24px;
+            font-size: 18px;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .container button:hover {
-            background-color: #7a45f5;
-        }
-
-        .container a {
             text-decoration: none;
+            color: white;
+        }
+
+        .btn-register {
+            background-color: #007BFF;
+        }
+
+        .btn-register:hover {
+            background-color: #005bb5;
+        }
+
+        .btn-login {
+            background-color: #28a745;
+        }
+
+        .btn-login:hover {
+            background-color: #1e7e34;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <a th:href="@{/register}"><button>Register</button></a>
-    <a th:href="@{/login}"><button>Login</button></a>
+
+<div class="title">
+    <a th:href="@{/}">
+        THE SHOP
+    </a>
+</div>
+
+<div class="home-actions">
+    <a th:href="@{/register}" class="btn btn-register">Register</a>
+    <a th:href="@{/login}" class="btn btn-login">Login</a>
 </div>
 </body>
 </html>

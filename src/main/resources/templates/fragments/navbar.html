@@ -25,7 +25,7 @@
             <li>
                 <a th:href="@{/order}" class="shopping-cart">
                     <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count" th:text="${#lists.size(user.orderItems)}"></span>
+                    <span class="cart-count" th:text="${user.orderItems != null ? #lists.size(user.orderItems) : 0}"></span>
                 </a>
             </li>
         </ul>

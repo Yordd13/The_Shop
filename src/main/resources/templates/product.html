@@ -169,7 +169,7 @@
 
     </div>
     <div class="separator"></div>
-    <div class="footer">Listed on: <span th:text="${product.listedOn}"></span></div>
+    <div class="footer">Listed on: <span th:text="${#temporals.format(product.listedOn, 'MMMM dd, yyyy, hh:mm a')}"></span></div>
 </div>
 </body>
 </html>

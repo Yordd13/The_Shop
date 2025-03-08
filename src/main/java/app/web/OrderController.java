@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,10 +38,12 @@ public class OrderController {
 
         User user = userService.getById(authenticationDetails.getUserId());
         List<OrderItem> orderItems = user.getOrderItems();
+        BigDecimal totalPrice = orderItemService.getTotalPrice(orderItems);
 
         ModelAndView mav = new ModelAndView("order");
         mav.addObject("user", user);
         mav.addObject("orderItems", orderItems);
+        mav.addObject("totalPrice", totalPrice);
 
         return mav;
     }

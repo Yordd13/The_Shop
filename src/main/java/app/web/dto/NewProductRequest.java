@@ -15,7 +15,7 @@ public class NewProductRequest {
     @Size(min = 2,max = 20, message = "Name length must be between 2 and 20 characters!")
     private String name;
 
-    @Size(min = 10,max = 200, message = "Description length must be between 10 and 200 characters!")
+    @Size(min = 20,max = 200, message = "Description length must be between 20 and 200 characters!")
     private String description;
 
     @NotNull(message = "The price should be no less than 1")
