@@ -81,12 +81,14 @@ public class IndexController {
     public ModelAndView getCategoryPage(@AuthenticationPrincipal AuthenticationDetails authenticationDetails) {
 
         User user = userService.getById(authenticationDetails.getUserId());
+        int cartQuantity = userService.getOrderQuantity(user);
 
         List<Category> categories = categoryService.getAllCategories();
 
         ModelAndView modelAndView = new ModelAndView("home");
         modelAndView.addObject("user", user);
         modelAndView.addObject("categoryList",categories);
+        modelAndView.addObject("cartQuantity", cartQuantity);
 
         return modelAndView;
     }

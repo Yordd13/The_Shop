@@ -30,4 +30,11 @@ public class OrderItem {
 
     @Column(nullable = false)
     private int quantity;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
+
+    @Column(nullable = false)
+    private boolean isVisible;
 }

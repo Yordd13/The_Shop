@@ -5,11 +5,15 @@ import app.orderItem.model.OrderItem;
 import app.orderItem.repository.OrderItemRepository;
 import app.products.model.Product;
 import app.user.model.User;
+import app.web.dto.UserOrderItemsToOrderEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -24,27 +28,31 @@ public class OrderItemService {
 
     public void addNewOrderItem(User user, Product product) {
 
-        orderItemRepository.findByProductIdAndUserId(product.getId(), user.getId())
-                .ifPresentOrElse(
-                        orderItem -> {
-                            if (orderItem.getQuantity() + 1 > product.getQuantity()) {
-                                throw new IllegalStateException("Cannot add more items: product stock limit reached.");
-                            }
-                            orderItem.setQuantity(orderItem.getQuantity() + 1);
-                            orderItemRepository.save(orderItem);
-                        },
-                        () -> {
-                            if (product.getQuantity() <= 0) {
-                                throw new IllegalStateException("Cannot create order item: product is out of stock.");
-                            }
-                            OrderItem newOrderItem = OrderItem.builder()
-                                    .user(user)
-                                    .product(product)
-                                    .quantity(1)
-                                    .build();
-                            orderItemRepository.save(newOrderItem);
-                        }
-                );
+        Optional<OrderItem> orderItemOptional = orderItemRepository.findByProductIdAndUserIdAndVisible(product.getId(), user.getId());
+
+        if(orderItemOptional.isEmpty()) {
+            if (product.getQuantity() <= 0) {
+                throw new IllegalStateException("Cannot create order item: product is out of stock.");
+            }
+            OrderItem newOrderItem = OrderItem.builder()
+                    .user(user)
+                    .product(product)
+                    .quantity(1)
+                    .order(null)
+                    .isVisible(true)
+                    .build();
+            orderItemRepository.save(newOrderItem);
+            return;
+        }
+
+        OrderItem orderItem = orderItemOptional.get();
+
+        if (orderItem.getQuantity() + 1 > product.getQuantity()) {
+            return;
+        }
+
+        orderItem.setQuantity(orderItem.getQuantity() + 1);
+        orderItemRepository.save(orderItem);
 
     }
 
@@ -81,4 +89,21 @@ public class OrderItemService {
         }
         return totalPrice;
     }
+
+    public List<OrderItem> getOrderItemsByUser(User user) {
+        return orderItemRepository.findByUser(user);
+    }
+
+    @EventListener
+    @Async
+    public void addOrderIdToOrderItems(UserOrderItemsToOrderEvent event){
+        List<OrderItem> orderItems = getOrderItemsByUser(event.getUser());
+
+        orderItems.forEach(orderItem -> {
+           orderItem.setOrder(event.getOrder());
+           orderItem.setVisible(false);
+           orderItemRepository.save(orderItem);
+        });
+    }
+
 }

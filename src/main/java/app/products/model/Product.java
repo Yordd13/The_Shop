@@ -54,4 +54,7 @@ public class Product {
 
     @Column(nullable = false)
     private LocalDateTime updatedOn;
+
+    @Column(nullable = false)
+    private boolean isVisible;
 }

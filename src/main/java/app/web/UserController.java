@@ -30,9 +30,11 @@ public class UserController {
     public ModelAndView profile(@PathVariable String username) {
 
         User user = userService.getByUsername(username);
+        int cartQuantity = userService.getOrderQuantity(user);
 
         ModelAndView mav = new ModelAndView("user-profile");
         mav.addObject("user", user);
+        mav.addObject("cartQuantity", cartQuantity);
 
         return mav;
     }
@@ -41,10 +43,12 @@ public class UserController {
     public ModelAndView updateProfile(@AuthenticationPrincipal AuthenticationDetails authenticationDetails) {
 
         User user = userService.getById(authenticationDetails.getUserId());
+        int cartQuantity = userService.getOrderQuantity(user);
 
         ModelAndView mav = new ModelAndView("edit-profile");
         mav.addObject("user", user);
         mav.addObject("userEditRequest", DtoMapper.mapUserToUserEditRequest(user));
+        mav.addObject("cartQuantity", cartQuantity);
 
         return mav;
     }

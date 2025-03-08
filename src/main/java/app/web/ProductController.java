@@ -44,12 +44,14 @@ public class ProductController {
     public ModelAndView productPage(@PathVariable("productId") UUID productId, @AuthenticationPrincipal AuthenticationDetails authenticationDetails) {
 
         User user = userService.getById(authenticationDetails.getUserId());
+        int cartQuantity = userService.getOrderQuantity(user);
 
         Product product = productService.getById(productId);
 
         ModelAndView mav = new ModelAndView("product");
         mav.addObject("user", user);
         mav.addObject("product", product);
+        mav.addObject("cartQuantity", cartQuantity);
 
         return mav;
     }
@@ -68,11 +70,13 @@ public class ProductController {
     public ModelAndView addProductPage(@AuthenticationPrincipal AuthenticationDetails authenticationDetails) {
         User user = userService.getById(authenticationDetails.getUserId());
         List<Category> categories = categoryService.getAllCategories();
+        int cartQuantity = userService.getOrderQuantity(user);
 
         ModelAndView mav = new ModelAndView("new-product");
         mav.addObject("user", user);
         mav.addObject("categories", categories);
         mav.addObject("newProductRequest",new NewProductRequest());
+        mav.addObject("cartQuantity", cartQuantity);
 
         return mav;
     }
@@ -83,11 +87,13 @@ public class ProductController {
 
         if (bindingResult.hasErrors()) {
             List<Category> categories = categoryService.getAllCategories();
+            int cartQuantity = userService.getOrderQuantity(user);
 
             ModelAndView mav = new ModelAndView("new-product");
             mav.addObject("user", user);
             mav.addObject("categories", categories);
             mav.addObject("newProductRequest", newProductRequest);
+            mav.addObject("cartQuantity", cartQuantity);
             return mav;
         }
 

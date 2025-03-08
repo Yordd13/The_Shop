@@ -27,8 +27,7 @@ public class Order {
     @ManyToOne
     private User buyer;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "order_id")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @Column(nullable = false)
@@ -36,8 +35,4 @@ public class Order {
 
     @Column(nullable = false)
     private BigDecimal totalPrice;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private OrderStatus status;
 }

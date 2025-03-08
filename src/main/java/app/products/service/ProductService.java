@@ -7,13 +7,17 @@ import app.products.model.Product;
 import app.products.repository.ProductRepository;
 import app.user.model.User;
 import app.web.dto.NewProductRequest;
+import app.web.dto.OrderProductsQuantityDecreaseEvent;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -48,8 +52,31 @@ public class ProductService {
                 .category(newProductRequest.getCategory())
                 .quantity(newProductRequest.getQuantity())
                 .seller(user)
+                .isVisible(true)
                 .build();
 
+        productRepository.save(product);
+    }
+
+    @EventListener
+    @Async
+    public void decreaseProductsQuantityAfterNewOrder(OrderProductsQuantityDecreaseEvent event) {
+
+        Map<UUID, Integer> productQuantityMap = event.getProductQuantityMap();
+
+        productQuantityMap.forEach(this::decreaseProductQuantity);
+    }
+
+    private void decreaseProductQuantity(UUID productId, int quantity) {
+        Product product = getById(productId);
+        if(product.getQuantity() < quantity) {
+            throw new DomainException("Product with id [%s] has less quantity that the requested!".formatted(productId));
+        }
+        product.setQuantity(product.getQuantity() - quantity);
+
+        if(product.getQuantity() == 0) {
+            product.setVisible(false);
+        }
         productRepository.save(product);
     }
 }

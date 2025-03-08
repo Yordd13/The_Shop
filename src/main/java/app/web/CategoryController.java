@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/categories")
@@ -35,16 +36,22 @@ public class CategoryController {
 
         User user = userService.getById(authenticationDetails.getUserId());
 
+        int cartQuantity = userService.getOrderQuantity(user);
+
         Category category = categoryService.getByName(name.toUpperCase());
 
-        List<Product> productsByCategory = category.getProducts();
+        List<Product> productsByCategory = category.getProducts()
+                .stream()
+                .filter(Product::isVisible)
+                .collect(Collectors.toList());
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("category");
-        modelAndView.addObject("user", user);
-        modelAndView.addObject("category", category);
-        modelAndView.addObject("products", productsByCategory);
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("category");
+        mav.addObject("user", user);
+        mav.addObject("category", category);
+        mav.addObject("products", productsByCategory);
+        mav.addObject("cartQuantity", cartQuantity);
 
-        return modelAndView;
+        return mav;
     }
 }

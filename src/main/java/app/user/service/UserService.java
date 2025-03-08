@@ -1,5 +1,6 @@
 package app.user.service;
 
+import app.orderItem.model.OrderItem;
 import app.security.AuthenticationDetails;
 import app.exception.DomainException;
 import app.user.model.User;
@@ -106,4 +107,11 @@ public class UserService implements UserDetailsService {
             userRepository.save(user);
         }
     }
+
+    public int getOrderQuantity(User user) {
+        return (int) user.getOrderItems().stream()
+                .filter(OrderItem::isVisible)
+                .count();
+    }
+
 }
