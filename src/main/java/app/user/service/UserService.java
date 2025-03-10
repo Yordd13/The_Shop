@@ -1,5 +1,7 @@
 package app.user.service;
 
+import app.exception.EmailAlreadyExistsException;
+import app.exception.UsernameAlreadyExistsException;
 import app.orderItem.model.OrderItem;
 import app.security.AuthenticationDetails;
 import app.exception.DomainException;
@@ -40,13 +42,13 @@ public class UserService implements UserDetailsService {
         Optional<User> userOptionalUsername = userRepository.findByUsername(registerRequest.getUsername());
 
         if(userOptionalUsername.isPresent()) {
-            throw new DomainException("Username [%s] already exists.".formatted(registerRequest.getUsername()));
+            throw new UsernameAlreadyExistsException("Username [%s] already exists.".formatted(registerRequest.getUsername()));
         }
 
         Optional<User> userOptionalEmail = userRepository.findByEmail(registerRequest.getEmail());
 
         if(userOptionalEmail.isPresent()) {
-            throw new DomainException("Email [%s] already exists.".formatted(registerRequest.getEmail()));
+            throw new EmailAlreadyExistsException("Email [%s] already exists.".formatted(registerRequest.getEmail()));
         }
 
         User user = userRepository.save(initilizeUser(registerRequest));

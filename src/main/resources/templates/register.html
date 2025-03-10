@@ -68,6 +68,7 @@
       <label for="exampleInputUsername">Username</label>
       <input type="text" class="form-control" id="exampleInputUsername" placeholder="Enter username" th:field="*{username}" required>
       <p class="alert-warning" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
+      <p class="alert-warning" th:text="${usernameExistsExceptionMessage}"></p>
     </div>
 
     <!-- Email Input -->
@@ -75,6 +76,7 @@
       <label for="exampleInputEmail1">Email address</label>
       <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" th:field="*{email}" required>
       <p class="alert-warning" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+      <p class="alert-warning" th:text="${emailExistsExceptionMessage}"></p>
     </div>
 
     <!-- Password Input -->
