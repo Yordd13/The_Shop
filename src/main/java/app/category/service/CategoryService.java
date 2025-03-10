@@ -2,6 +2,7 @@ package app.category.service;
 
 import app.category.model.Category;
 import app.category.repository.CategoryRepository;
+import app.products.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

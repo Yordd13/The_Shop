@@ -10,10 +10,7 @@ import app.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -22,17 +19,20 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/categories")
 public class CategoryController {
-    private CategoryService categoryService;
-    private UserService userService;
+
+    private final CategoryService categoryService;
+    private final UserService userService;
+    private final ProductService productService;
 
     @Autowired
-    public CategoryController(CategoryService categoryService, UserService userService) {
+    public CategoryController(CategoryService categoryService, UserService userService, ProductService productService) {
         this.categoryService = categoryService;
         this.userService = userService;
+        this.productService = productService;
     }
 
     @GetMapping("/{name}")
-    public ModelAndView getCategory(@PathVariable String name, @AuthenticationPrincipal AuthenticationDetails authenticationDetails) {
+    public ModelAndView getCategory(@PathVariable String name, @RequestParam(name = "search", required = false) String search, @AuthenticationPrincipal AuthenticationDetails authenticationDetails) {
 
         User user = userService.getById(authenticationDetails.getUserId());
 
@@ -40,10 +40,16 @@ public class CategoryController {
 
         Category category = categoryService.getByName(name.toUpperCase());
 
-        List<Product> productsByCategory = category.getProducts()
-                .stream()
-                .filter(Product::isVisible)
-                .collect(Collectors.toList());
+        List<Product> productsByCategory;
+
+        if (search != null && !search.isEmpty()) {
+            productsByCategory = productService.searchProductsByCategory(category,search);
+        } else {
+            productsByCategory = category.getProducts()
+                    .stream()
+                    .filter(Product::isVisible)
+                    .toList();
+        }
 
         ModelAndView mav = new ModelAndView();
         mav.setViewName("category");
