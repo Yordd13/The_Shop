@@ -1,5 +1,6 @@
 package app.web;
 
+import app.order.model.Order;
 import app.security.AuthenticationDetails;
 import app.user.model.User;
 import app.user.service.UserService;
@@ -13,6 +14,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -31,10 +34,15 @@ public class UserController {
 
         User user = userService.getByUsername(username);
         int cartQuantity = userService.getOrderQuantity(user);
+        List<Order> orders = user.getOrders().stream()
+                .sorted(Comparator.comparing(Order::getOrderDate).reversed())
+                .limit(5)
+                .toList();
 
         ModelAndView mav = new ModelAndView("user-profile");
         mav.addObject("user", user);
         mav.addObject("cartQuantity", cartQuantity);
+        mav.addObject("orders", orders);
 
         return mav;
     }

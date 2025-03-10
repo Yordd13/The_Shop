@@ -8,7 +8,6 @@ import app.user.model.UserRole;
 import app.user.repository.UserRepository;
 import app.web.dto.RegisterRequest;
 import app.web.dto.UserEditRequest;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Service
@@ -109,9 +109,16 @@ public class UserService implements UserDetailsService {
     }
 
     public int getOrderQuantity(User user) {
-        return (int) user.getOrderItems().stream()
-                .filter(OrderItem::isVisible)
-                .count();
+        AtomicInteger count = new AtomicInteger();
+        List<OrderItem> orderItems = user.getOrderItems().stream()
+                .filter(orderItem -> orderItem.getOrder() == null)
+                .toList();
+
+        orderItems.forEach(orderItem -> {
+            count.addAndGet(orderItem.getQuantity());
+        });
+
+        return count.get();
     }
 
 }

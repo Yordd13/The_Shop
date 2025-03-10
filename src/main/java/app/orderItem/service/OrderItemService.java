@@ -39,7 +39,6 @@ public class OrderItemService {
                     .product(product)
                     .quantity(1)
                     .order(null)
-                    .isVisible(true)
                     .build();
             orderItemRepository.save(newOrderItem);
             return;
@@ -101,7 +100,6 @@ public class OrderItemService {
 
         orderItems.forEach(orderItem -> {
            orderItem.setOrder(event.getOrder());
-           orderItem.setVisible(false);
            orderItemRepository.save(orderItem);
         });
     }

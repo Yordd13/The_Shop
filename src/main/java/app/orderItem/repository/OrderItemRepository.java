@@ -14,7 +14,7 @@ import java.util.UUID;
 @Repository
 public interface OrderItemRepository extends JpaRepository<OrderItem, UUID> {
 
-    @Query("SELECT o FROM OrderItem o WHERE o.product.id = :productId AND o.user.id = :userId AND o.isVisible = true")
+    @Query("SELECT o FROM OrderItem o WHERE o.product.id = :productId AND o.user.id = :userId AND o.order IS NULL ")
     Optional<OrderItem> findByProductIdAndUserIdAndVisible(
             @Param("productId") UUID productId,
             @Param("userId") UUID userId

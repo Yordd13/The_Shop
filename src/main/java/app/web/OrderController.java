@@ -42,8 +42,9 @@ public class OrderController {
 
         User user = userService.getById(authenticationDetails.getUserId());
         List<OrderItem> orderItems = user.getOrderItems().stream()
-                .filter(OrderItem::isVisible)
+                .filter(orderItem -> orderItem.getOrder() == null)
                 .collect(Collectors.toList());
+
         BigDecimal totalPrice = orderItemService.getTotalPrice(orderItems);
         int cartQuantity = userService.getOrderQuantity(user);
 
@@ -76,7 +77,7 @@ public class OrderController {
     public String purchaseOrder(@AuthenticationPrincipal AuthenticationDetails authenticationDetails) {
         User user = userService.getById(authenticationDetails.getUserId());
         List<OrderItem> orderItems = user.getOrderItems().stream()
-                .filter(OrderItem::isVisible)
+                .filter(orderItem -> orderItem.getOrder() == null)
                 .collect(Collectors.toList());
 
         BigDecimal totalPrice = orderItemService.getTotalPrice(orderItems);
