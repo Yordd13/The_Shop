@@ -1,5 +1,6 @@
 package app.user.service;
 
+import app.email.service.EmailService;
 import app.exception.EmailAlreadyExistsException;
 import app.exception.UsernameAlreadyExistsException;
 import app.orderItem.model.OrderItem;
@@ -30,11 +31,13 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
     public void register(RegisterRequest registerRequest) {
@@ -53,6 +56,7 @@ public class UserService implements UserDetailsService {
 
         User user = userRepository.save(initilizeUser(registerRequest));
 
+        emailService.saveNotificationPreference(user.getId(),true,user.getEmail());
 
         log.info("Username [{}] has been created.", user.getUsername());
 

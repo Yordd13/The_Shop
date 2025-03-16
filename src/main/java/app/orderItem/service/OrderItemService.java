@@ -1,5 +1,6 @@
 package app.orderItem.service;
 
+import app.email.service.EmailService;
 import app.exception.DomainException;
 import app.orderItem.model.OrderItem;
 import app.orderItem.repository.OrderItemRepository;
@@ -20,10 +21,12 @@ import java.util.UUID;
 public class OrderItemService {
 
     private final OrderItemRepository orderItemRepository;
+    private final EmailService emailService;
 
     @Autowired
-    public OrderItemService(OrderItemRepository orderItemRepository) {
+    public OrderItemService(OrderItemRepository orderItemRepository, EmailService emailService) {
         this.orderItemRepository = orderItemRepository;
+        this.emailService = emailService;
     }
 
     public void addNewOrderItem(User user, Product product) {
@@ -99,8 +102,14 @@ public class OrderItemService {
         List<OrderItem> orderItems = getOrderItemsByUser(event.getUser());
 
         orderItems.forEach(orderItem -> {
-           orderItem.setOrder(event.getOrder());
-           orderItemRepository.save(orderItem);
+
+            String body = "You successfully sold " + orderItem.getQuantity() + " items from your product " + orderItem.getProduct().getName();
+
+            emailService.sendNotification(orderItem.getProduct().getSeller().getId(),"Sold product",body);
+
+
+            orderItem.setOrder(event.getOrder());
+            orderItemRepository.save(orderItem);
         });
     }
 
