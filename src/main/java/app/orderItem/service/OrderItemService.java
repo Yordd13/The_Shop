@@ -96,8 +96,8 @@ public class OrderItemService {
         return orderItemRepository.findByUser(user);
     }
 
+    //removed @Async, because when an order is made and the user is redirected to /categories the cartQuantity is not updated still
     @EventListener
-    @Async
     public void addOrderIdToOrderItems(UserOrderItemsToOrderEvent event){
         List<OrderItem> orderItems = getOrderItemsByUser(event.getUser());
 
