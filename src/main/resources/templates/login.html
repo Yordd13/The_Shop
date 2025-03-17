@@ -7,15 +7,26 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
+            margin: 0 0 0 50px;
             padding: 0;
-            background-color: #f4f4f4;
+            background: url('/images/online-shopping-4532460.jpg') no-repeat center center/cover;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             flex-direction: column;
             min-height: 100vh;
             font-size: 18px;
+        }
+
+        .title {
+            position: relative;
+            text-align: center;
+            font-size: 60px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b6b, #ff4757, #ba55d3, #ff6b6b, #ff7f50, #da70d6, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
         }
 
         .login-container {
@@ -75,7 +86,7 @@
         }
 
         .btn-login:hover {
-            background-color: #005bb5;
+            background-color: #218838;
         }
 
         .btn-signup {
@@ -88,7 +99,7 @@
         }
 
         .btn-signup:hover {
-            background-color: #218838;
+            background-color: #005bb5;
         }
 
         .alert-warning {
@@ -98,6 +109,11 @@
     </style>
 </head>
 <body>
+
+<div class="title">
+    <a th:href="@{/}">THE SHOP</a>
+</div>
+
 <div class="login-container">
     <h2>Login</h2>
     <form th:action="@{/login}" th:method="post" >

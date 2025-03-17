@@ -1,8 +1,8 @@
 package app.web;
 
-import app.exception.EmailAlreadyExistsException;
-import app.exception.UsernameAlreadyExistsException;
+import app.exception.RegistrationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.MissingRequestValueException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,18 +17,15 @@ import java.nio.file.AccessDeniedException;
 @ControllerAdvice
 public class ExceptionAdvice {
 
-    @ExceptionHandler(EmailAlreadyExistsException.class)
-    public String handleEmailExistsException(RedirectAttributes redirectAttributes) {
-
-            redirectAttributes.addFlashAttribute("emailExistsExceptionMessage", "Email is already taken!");
-
-        return "redirect:/register";
-    }
-    @ExceptionHandler(UsernameAlreadyExistsException.class)
-    public String handleUsernameExistsException(RedirectAttributes redirectAttributes) {
-
-        redirectAttributes.addFlashAttribute("usernameExistsExceptionMessage", "Username is already taken!");
-
+    @ExceptionHandler(RegistrationException.class)
+    public String handleRegistrationException(RegistrationException ex, RedirectAttributes redirectAttributes) {
+        for (String errorMessage : ex.getErrorMessages()) {
+            if (errorMessage.contains("Username")) {
+                redirectAttributes.addFlashAttribute("usernameExistsExceptionMessage", errorMessage);
+            } else if (errorMessage.contains("Email")) {
+                redirectAttributes.addFlashAttribute("emailExistsExceptionMessage", errorMessage);
+            }
+        }
         return "redirect:/register";
     }
 

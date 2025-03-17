@@ -1,8 +1,7 @@
 package app.user.service;
 
 import app.email.service.EmailService;
-import app.exception.EmailAlreadyExistsException;
-import app.exception.UsernameAlreadyExistsException;
+import app.exception.RegistrationException;
 import app.orderItem.model.OrderItem;
 import app.security.AuthenticationDetails;
 import app.exception.DomainException;
@@ -11,6 +10,7 @@ import app.user.model.UserRole;
 import app.user.repository.UserRepository;
 import app.web.dto.RegisterRequest;
 import app.web.dto.UserEditRequest;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,18 +41,23 @@ public class UserService implements UserDetailsService {
         this.emailService = emailService;
     }
 
+    @Transactional
     public void register(RegisterRequest registerRequest) {
 
-        Optional<User> userOptionalUsername = userRepository.findByUsername(registerRequest.getUsername());
+        List<String> errorMessages = new ArrayList<>();
 
-        if(userOptionalUsername.isPresent()) {
-            throw new UsernameAlreadyExistsException("Username [%s] already exists.".formatted(registerRequest.getUsername()));
+        Optional<User> userOptionalUsername = userRepository.findByUsername(registerRequest.getUsername());
+        if (userOptionalUsername.isPresent()) {
+            errorMessages.add("Username " + registerRequest.getUsername() + " already exists.");
         }
 
         Optional<User> userOptionalEmail = userRepository.findByEmail(registerRequest.getEmail());
+        if (userOptionalEmail.isPresent()) {
+            errorMessages.add("Email " + registerRequest.getEmail() + " already exists.");
+        }
 
-        if(userOptionalEmail.isPresent()) {
-            throw new EmailAlreadyExistsException("Email [%s] already exists.".formatted(registerRequest.getEmail()));
+        if (!errorMessages.isEmpty()) {
+            throw new RegistrationException(errorMessages);
         }
 
         User user = userRepository.save(initilizeUser(registerRequest));
