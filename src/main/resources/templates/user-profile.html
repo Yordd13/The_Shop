@@ -106,6 +106,13 @@
             text-align: center;
         }
 
+        .no-orders-message {
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+            color: #666;
+        }
+
         table {
             background-color: #fff;
             width: 100%;
@@ -176,7 +183,10 @@
 
 <div class="order-history">
     <h2>Order History</h2>
-    <table>
+    <div th:if="${#lists.size(orders)==0}" class="no-orders-message">
+        <p>No orders found.</p>
+    </div>
+    <table th:unless="${#lists.size(orders)==0}">
         <thead>
         <tr>
             <th>Date</th>
