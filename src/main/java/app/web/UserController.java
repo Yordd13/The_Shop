@@ -1,5 +1,6 @@
 package app.web;
 
+import app.email.service.EmailService;
 import app.order.model.Order;
 import app.security.AuthenticationDetails;
 import app.user.model.User;
@@ -16,17 +17,18 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
+    private final EmailService emailService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, EmailService emailService, EmailService emailService1) {
         this.userService = userService;
+        this.emailService = emailService1;
     }
 
     @GetMapping("/profile/{username}")
@@ -38,11 +40,13 @@ public class UserController {
                 .sorted(Comparator.comparing(Order::getOrderDate).reversed())
                 .limit(5)
                 .toList();
+        boolean isNotificationEnabled = emailService.getNotificationPreference(user.getId()).isEnabled();
 
         ModelAndView mav = new ModelAndView("user-profile");
         mav.addObject("user", user);
         mav.addObject("cartQuantity", cartQuantity);
         mav.addObject("orders", orders);
+        mav.addObject("isNotificationEnabled", isNotificationEnabled);
 
         return mav;
     }
@@ -76,5 +80,15 @@ public class UserController {
         userService.editUserProfile(user,userEditRequest);
 
         return new ModelAndView("redirect:/users/profile/"+user.getUsername());
+    }
+
+    @GetMapping("/notifications")
+    public String updateNotifications(@AuthenticationPrincipal AuthenticationDetails authenticationDetails) {
+        User user = userService.getById(authenticationDetails.getUserId());
+
+        boolean isEnabled = emailService.getNotificationPreference(user.getId()).isEnabled();
+        emailService.saveNotificationPreference(user.getId(),!isEnabled,user.getEmail());
+
+        return "redirect:/users/profile/"+user.getUsername();
     }
 }

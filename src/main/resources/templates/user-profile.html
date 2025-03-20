@@ -64,30 +64,52 @@
         }
 
         .last-updated {
-            font-size: 16px; /* Larger font size for last updated */
+            font-size: 16px;
             color: #666;
-            position: absolute; /* Positioned as a footer */
-            bottom: 10px; /* Reduced gap from the bottom */
-            left: 40px; /* Distance from the left */
-            right: 40px; /* Distance from the right */
-            text-align: center; /* Center the text */
+            position: absolute;
+            bottom: 10px;
+            left: 40px;
+            right: 40px;
+            text-align: center;
         }
 
         .edit-button {
             position: absolute;
-            top: 40px; /* Adjusted position */
-            right: 40px; /* Adjusted position */
+            top: 40px;
+            right: 40px;
             background-color: #007BFF;
             color: #fff;
             border: none;
-            padding: 12px 24px; /* Larger button */
+            padding: 12px 24px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 20px; /* Larger font size for the button */
+            font-size: 20px;
         }
 
         .edit-button:hover {
             background-color: #005bb5;
+        }
+        .notification-btn {
+            position: absolute;
+            top: 40px;
+            right: 150px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.3s;
+            text-decoration: none;
+            justify-content: center;
+        }
+
+        .notification-btn.off {
+            background-color: #dc3545;
         }
 
         .actions a {
@@ -156,6 +178,7 @@
         .preview-button:hover {
             background: #218838;
         }
+
     </style>
 </head>
 <body>
@@ -176,8 +199,14 @@
         <strong>Last Updated On:</strong>
         <span th:text="${#temporals.format(user.updatedOn, 'MMMM dd, yyyy, hh:mm a')}"></span>
     </div>
+
     <a th:href="@{/users/profile/edit}">
         <button class="edit-button">Edit</button>
+    </a>
+
+    <a th:href="@{/users/notifications}" id="notification-btn" class="notification-btn" th:classappend="${isNotificationEnabled} ? 'on' : 'off'">
+        <i class="fas" th:classappend="${isNotificationEnabled} ? 'fa-bell' : 'fa-bell-slash'"></i>
+        Notifications <span th:text="${isNotificationEnabled} ? 'ON' : 'OFF'"></span>
     </a>
 </div>
 
