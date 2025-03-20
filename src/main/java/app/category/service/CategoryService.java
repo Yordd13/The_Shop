@@ -6,7 +6,10 @@ import app.products.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 
 @Service
@@ -30,5 +33,19 @@ public class CategoryService {
 
     public Category getByName(String name) {
         return categoryRepository.getByCategoryName(name);
+    }
+
+    public Map<UUID, Integer> getActiveProductsCount() {
+        List<Category> categories = getAllCategories();
+        Map<UUID, Integer> activeProductCounts = new HashMap<>();
+
+        for (Category category : categories) {
+            int count = (int) category.getProducts().stream()
+                    .filter(product -> product.getQuantity() > 0)
+                    .count();
+            activeProductCounts.put(category.getId(), count);
+        }
+
+        return activeProductCounts;
     }
 }

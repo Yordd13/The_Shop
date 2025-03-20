@@ -21,7 +21,7 @@
                 <div class="item" >
                     <img th:src="${category.categoryPictureUrl}" alt="Category Image">
                     <h3 th:text="${#strings.capitalize(category.categoryName.toLowerCase())}">Category Name</h3>
-                    <p th:text="'Items count: ' + ${#lists.size(category.products)}">Items count</p>
+                    <p th:text="'Items count: ' + ${activeProductCounts.get(category.id)}"></p>
                 </div>
             </a>
         </div>

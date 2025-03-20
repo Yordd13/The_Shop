@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 
 @Controller
@@ -84,11 +87,13 @@ public class IndexController {
         int cartQuantity = userService.getOrderQuantity(user);
 
         List<Category> categories = categoryService.getAllCategories();
+        Map<UUID, Integer> activeProductCounts = categoryService.getActiveProductsCount();
 
         ModelAndView modelAndView = new ModelAndView("home");
         modelAndView.addObject("user", user);
         modelAndView.addObject("categoryList",categories);
         modelAndView.addObject("cartQuantity", cartQuantity);
+        modelAndView.addObject("activeProductCounts", activeProductCounts);
 
         return modelAndView;
     }
