@@ -12,6 +12,7 @@ import app.web.dto.RegisterRequest;
 import app.web.dto.UserEditRequest;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -116,6 +117,7 @@ public class UserService implements UserDetailsService {
     public void addSellerRole(User user) {
         if(!user.getRoles().contains(UserRole.SELLER)){
             user.getRoles().add(UserRole.SELLER);
+            user.getRoles().remove(UserRole.USER);
             userRepository.save(user);
         }
     }
@@ -133,4 +135,15 @@ public class UserService implements UserDetailsService {
         return count.get();
     }
 
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public void addAdminRole(User user) {
+        if(!user.getRoles().contains(UserRole.ADMIN)){
+            user.getRoles().add(UserRole.ADMIN);
+            user.getRoles().remove(UserRole.USER);
+            userRepository.save(user);
+        }
+    }
 }
