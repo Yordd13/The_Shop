@@ -22,6 +22,12 @@
             <li>
                 <a th:href="@{/products/add}">Add product</a>
             </li>
+            <li th:if="${user.roles.contains(T(app.user.model.UserRole).ADMIN)}">
+                <a href="#">Control Panel</a>
+            </li>
+            <li th:if="${user.roles.contains(T(app.user.model.UserRole).SELLER)}">
+                <a href="#">Sales Overview</a>
+            </li>
             <li>
                 <a th:href="@{/order}" class="shopping-cart">
                     <i class="fas fa-shopping-cart"></i>

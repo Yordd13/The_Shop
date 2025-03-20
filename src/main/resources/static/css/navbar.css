@@ -22,6 +22,9 @@ nav {
 .nav-left h1 {
     margin: 0;
     font-size: 28px;
+    background: linear-gradient(45deg, #ff6b6b, #ff4757, #ba55d3, #ff6b6b, #ff7f50, #da70d6, #ff6b6b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 /* Right side: Navigation */

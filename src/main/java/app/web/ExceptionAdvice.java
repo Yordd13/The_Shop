@@ -34,7 +34,7 @@ public class ExceptionAdvice {
             AccessDeniedException.class,
             NoResourceFoundException.class,
             MethodArgumentTypeMismatchException.class,
-            MissingRequestValueException.class
+            MissingRequestValueException.class,
     })
     public ModelAndView handleNotFoundException() {
 
