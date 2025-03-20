@@ -87,4 +87,12 @@ public class OrderController {
 
         return "redirect:/categories";
     }
+
+    @GetMapping("/{orderItemId}/remove")
+    public String removeOrderItem(@PathVariable UUID orderItemId){
+
+        orderItemService.deleteOrderItem(orderItemId);
+
+        return "redirect:/order";
+    }
 }

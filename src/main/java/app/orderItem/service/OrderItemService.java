@@ -113,4 +113,8 @@ public class OrderItemService {
         });
     }
 
+    public void deleteOrderItem(UUID orderItemId) {
+        OrderItem orderItem = getOrderItem(orderItemId);
+        orderItemRepository.delete(orderItem);
+    }
 }
