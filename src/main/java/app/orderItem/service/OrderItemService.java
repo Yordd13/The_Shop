@@ -94,7 +94,7 @@ public class OrderItemService {
     }
 
     public List<OrderItem> getOrderItemsByUser(User user) {
-        return orderItemRepository.findByUser(user);
+        return orderItemRepository.findByUserWhereOrderIsNull(user);
     }
 
     //removed @Async, because when an order is made and the user is redirected to /categories the cartQuantity is not updated still

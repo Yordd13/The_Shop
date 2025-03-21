@@ -20,8 +20,8 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, UUID> {
             @Param("productId") UUID productId,
             @Param("userId") UUID userId
     );
-
-    List<OrderItem> findByUser(User user);
+    @Query("SELECT o FROM OrderItem o WHERE o.user = :user AND o.order IS NULL")
+    List<OrderItem> findByUserWhereOrderIsNull(User user);
 
     List<OrderItem> findByOrder(Order order);
 }

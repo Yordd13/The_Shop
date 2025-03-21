@@ -43,7 +43,8 @@ public class CategoryController {
         List<Product> productsByCategory;
 
         if (search != null && !search.isEmpty()) {
-            productsByCategory = productService.searchProductsByCategory(category,search);
+            productsByCategory = productService.searchProductsByCategory(category,search)
+                    .stream().filter(Product::isVisible).collect(Collectors.toList());
         } else {
             productsByCategory = category.getProducts()
                     .stream()

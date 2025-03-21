@@ -42,7 +42,7 @@ public class Product {
     private User seller;
 
     @ManyToOne
-    @JoinColumn(name = "category_id") // This will create a foreign key in the Product table
+    @JoinColumn(name = "category_id")
     private Category category;
 
 
