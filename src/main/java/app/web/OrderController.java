@@ -1,5 +1,6 @@
 package app.web;
 
+import app.order.model.Order;
 import app.order.service.OrderService;
 import app.orderItem.model.OrderItem;
 import app.orderItem.service.OrderItemService;
@@ -25,14 +26,12 @@ import java.util.stream.Collectors;
 public class OrderController {
 
     private final UserService userService;
-    private final ProductService productService;
     private final OrderItemService orderItemService;
     private final OrderService orderService;
 
     @Autowired
     public OrderController(UserService userService, ProductService productService, OrderItemService orderItemService, OrderService orderService) {
         this.userService = userService;
-        this.productService = productService;
         this.orderItemService = orderItemService;
         this.orderService = orderService;
     }
@@ -94,5 +93,22 @@ public class OrderController {
         orderItemService.deleteOrderItem(orderItemId);
 
         return "redirect:/order";
+    }
+
+    @GetMapping("/{orderId}/preview")
+    public ModelAndView orderPreview(@PathVariable UUID orderId, @AuthenticationPrincipal AuthenticationDetails authenticationDetails){
+        User user = userService.getById(authenticationDetails.getUserId());
+        int cartQuantity = userService.getOrderQuantity(user);
+        Order order = orderService.getById(orderId);
+
+        List<OrderItem> orderItems = orderItemService.getOrderItemsByOrderId(order);
+
+        ModelAndView mav = new ModelAndView("order-preview");
+        mav.addObject("user", user);
+        mav.addObject("orderItems", orderItems);
+        mav.addObject("order", order);
+        mav.addObject("cartQuantity", cartQuantity);
+
+        return mav;
     }
 }

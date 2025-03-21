@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Page</title>
+    <link rel="stylesheet" href="/css/navbar.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .order-container {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 900px;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+        thead {
+            background-color: #333;
+            color: white;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tbody tr:hover {
+            background-color: #ddd;
+        }
+        th {
+            font-size: 20px;
+        }
+        .button-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .button {
+            background: #333;
+            color: white;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        .total-price {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .product-image {
+            width: 70px;
+            height: 70px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .product-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+        .order-footer {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+<header th:replace="~{fragments/navbar::nav}"></header>
+<div class="order-container">
+    <h2>ORDER</h2>
+    <div>
+        <table>
+            <thead>
+            <tr>
+                <th>PRODUCT</th>
+                <th>SELLER</th>
+                <th>QUANTITY</th>
+                <th>PRICE</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${orderItems}">
+                <td>
+                    <div class="product-info">
+                        <img th:src="${item.product.image}" alt="Product Image" class="product-image">
+                        <span th:text="${item.product.name}"></span>
+                    </div>
+                </td>
+                <td th:text="${item.product.seller.username}"></td>
+                <td th:text="${item.quantity}"></td>
+                <td th:text="'$' + ${item.product.price}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="button-container">
+            <span class="total-price" th:text="'TOTAL PRICE: ' + ${order.totalPrice} + '$'"></span>
+            <a th:href="@{'/users/profile/' + ${user.username}}">
+                <button class="button">Go Back</button>
+            </a>
+        </div>
+        <div class="order-footer">
+            <span th:text="'Order Date: ' + ${#temporals.format(order.orderDate, 'MMMM dd, yyyy, hh:mm a')}"></span>
+        </div>
+    </div>
+</div>
+</body>
+</html>

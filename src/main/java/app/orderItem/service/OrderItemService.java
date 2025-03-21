@@ -2,6 +2,7 @@ package app.orderItem.service;
 
 import app.email.service.EmailService;
 import app.exception.DomainException;
+import app.order.model.Order;
 import app.orderItem.model.OrderItem;
 import app.orderItem.repository.OrderItemRepository;
 import app.products.model.Product;
@@ -116,5 +117,9 @@ public class OrderItemService {
     public void deleteOrderItem(UUID orderItemId) {
         OrderItem orderItem = getOrderItem(orderItemId);
         orderItemRepository.delete(orderItem);
+    }
+
+    public List<OrderItem> getOrderItemsByOrderId(Order order) {
+        return  orderItemRepository.findByOrder(order);
     }
 }

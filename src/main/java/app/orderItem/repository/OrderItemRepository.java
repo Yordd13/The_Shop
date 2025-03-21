@@ -1,5 +1,6 @@
 package app.orderItem.repository;
 
+import app.order.model.Order;
 import app.orderItem.model.OrderItem;
 import app.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,4 +22,6 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, UUID> {
     );
 
     List<OrderItem> findByUser(User user);
+
+    List<OrderItem> findByOrder(Order order);
 }

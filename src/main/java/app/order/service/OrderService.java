@@ -1,5 +1,6 @@
 package app.order.service;
 
+import app.exception.DomainException;
 import app.order.model.Order;
 import app.order.repository.OrderRepository;
 import app.orderItem.model.OrderItem;
@@ -52,5 +53,10 @@ public class OrderService {
                 ));
 
         eventPublisher.publishEvent(new OrderProductsQuantityDecreaseEvent(productQuantityMap));
+    }
+
+    public Order getById(UUID orderId) {
+        return orderRepository.findById(orderId).orElseThrow(()
+                -> new DomainException("Cannot find order with id: " + orderId));
     }
 }
