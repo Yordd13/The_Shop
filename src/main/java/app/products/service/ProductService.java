@@ -83,5 +83,14 @@ public class ProductService {
     public List<Product> searchProductsByCategory(Category category, String search) {
         return productRepository.findByCategoryAndNameContainingIgnoreCase(category,search);
     }
+
+    public void deleteProductsByUser(User user) {
+        List<Product> products = productRepository.getProductsBySeller(user);
+        products.forEach(product -> {
+            product.setQuantity(0);
+            product.setVisible(false);
+            productRepository.save(product);
+        });
+    }
 }
 

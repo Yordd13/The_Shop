@@ -19,11 +19,11 @@
             <li>
                 <a th:href="@{/categories}">Categories</a>
             </li>
-            <li>
+            <li th:unless="${user.isBannedFromSelling()}">
                 <a th:href="@{/products/add}">Add product</a>
             </li>
             <li th:if="${user.roles.contains(T(app.user.model.UserRole).ADMIN)}">
-                <a href="#">Control Panel</a>
+                <a th:href="@{/dashboard/admin}">Control Panel</a>
             </li>
             <li th:if="${user.roles.contains(T(app.user.model.UserRole).SELLER)}">
                 <a href="#">Sales Overview</a>

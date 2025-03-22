@@ -24,4 +24,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, UUID> {
     List<OrderItem> findByUserWhereOrderIsNull(User user);
 
     List<OrderItem> findByOrder(Order order);
+
+    @Query("SELECT o FROM OrderItem o WHERE o.product.seller = :user AND o.order IS NULL")
+    List<OrderItem> deleteOrderItemsByUser(User user);
 }

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Control Panel</title>
+  <link rel="stylesheet" href="/css/navbar.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f4;
+      margin: 0;
+    }
+    table {
+      width: 80%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      border-radius: 10px;
+      overflow: hidden;
+      font-size: 20px;
+      background: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+      padding: 18px;
+      text-align: center;
+    }
+    thead {
+      background-color: #333;
+      color: white;
+    }
+    tbody tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    tbody tr:hover {
+      background-color: #ddd;
+    }
+    th {
+      font-size: 22px;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .ban-button {
+      background-color: red;
+      color: white;
+    }
+    .unban-button {
+      background-color: green;
+      color: white;
+    }
+    .switch-button {
+      background-color: #007BFF;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<header th:replace="~{fragments/navbar::nav}"></header>
+
+<table>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>USERNAME</th>
+    <th>EMAIL</th>
+    <th>STATUS</th>
+    <th>BAN FROM SELLING</th>
+    <th>SWITCH ROLE</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="user : ${users}">
+    <td th:text="${user.id}"></td>
+    <td th:text="${user.username}"></td>
+    <td th:text="${user.email}"></td>
+    <td>
+      <a th:href="@{'/dashboard/users/toggle-status/'+${user.username}}">
+        <button
+                type="submit"
+                th:class="${user.isActive()} ? 'unban-button' : 'ban-button'"
+                th:text="${user.isActive()} ? 'ACTIVE' : 'INACTIVE'">
+        </button>
+      </a>
+    </td>
+    <td>
+      <a th:href="@{'/dashboard/users/toggle-ban/'+${user.username}}">
+        <button
+                type="submit"
+                th:class="${user.isBannedFromSelling()} ? 'ban-button' : 'unban-button'"
+                th:text="${user.isBannedFromSelling()} ? 'BANNED' : 'NOT BANNED'">
+        </button>
+      </a>
+    </td>
+    <td>
+      <a th:href="@{'/dashboard/users/toggle-role/'+${user.username}}">
+        <button
+              type="submit"
+              class="switch-button"
+              th:text="${user.roles.contains(T(app.user.model.UserRole).ADMIN)} ? 'ADMIN' : 'USER'">
+        </button>
+      </a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+</body>
+</html>

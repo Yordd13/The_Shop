@@ -122,4 +122,9 @@ public class OrderItemService {
     public List<OrderItem> getOrderItemsByOrderId(Order order) {
         return  orderItemRepository.findByOrder(order);
     }
+
+    public void deleteOrderItemsByUserThatAreNull(User user) {
+        List<OrderItem> orderItems = orderItemRepository.deleteOrderItemsByUser(user);
+        orderItemRepository.deleteAll(orderItems);
+    }
 }

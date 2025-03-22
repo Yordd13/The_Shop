@@ -3,6 +3,8 @@ package app.user.service;
 import app.email.service.EmailService;
 import app.exception.RegistrationException;
 import app.orderItem.model.OrderItem;
+import app.orderItem.service.OrderItemService;
+import app.products.service.ProductService;
 import app.security.AuthenticationDetails;
 import app.exception.DomainException;
 import app.user.model.User;
@@ -34,12 +36,16 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final ProductService productService;
+    private final OrderItemService orderItemService;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailService emailService, ProductService productService, OrderItemService orderItemService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
+        this.productService = productService;
+        this.orderItemService = orderItemService;
     }
 
     @Transactional
@@ -145,5 +151,37 @@ public class UserService implements UserDetailsService {
             user.getRoles().remove(UserRole.USER);
             userRepository.save(user);
         }
+    }
+
+    public void changeStatus(User user) {
+        user.setActive(!user.isActive());
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void changeBanFromSelling(User user) {
+        user.setBannedFromSelling(!user.isBannedFromSelling());
+
+        if(user.isBannedFromSelling()){
+            productService.deleteProductsByUser(user);
+            orderItemService.deleteOrderItemsByUserThatAreNull(user);
+        }
+        if(user.getRoles().contains(UserRole.SELLER)){
+            user.getRoles().remove(UserRole.SELLER);
+        }
+
+        userRepository.save(user);
+    }
+
+    public void changeRole(User user) {
+        if(user.getRoles().contains(UserRole.ADMIN)){
+            user.getRoles().remove(UserRole.ADMIN);
+            user.getRoles().add(UserRole.USER);
+        } else {
+            user.getRoles().remove(UserRole.USER);
+            user.getRoles().add(UserRole.ADMIN);
+        }
+
+        userRepository.save(user);
     }
 }
