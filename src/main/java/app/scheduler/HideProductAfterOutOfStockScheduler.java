@@ -23,7 +23,7 @@ public class HideProductAfterOutOfStockScheduler {
 
     @Scheduled(fixedRate = 60 * 60 * 1000)
     public void hideProductAfterOutOfStock() {
-        LocalDateTime fourHoursAgo = LocalDateTime.now().minusMinutes(1);
+        LocalDateTime fourHoursAgo = LocalDateTime.now().minusHours(4);
         List<Product> productsToHide = productService.getAllProductsOutOfStockForTheTimeLimit(fourHoursAgo);
 
         if(productsToHide.isEmpty()) {

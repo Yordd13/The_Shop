@@ -14,7 +14,6 @@
             background-color: #f4f4f4;
         }
 
-        /* Main Content */
         main {
             padding: 20px 40px;
             max-width: 1200px;
@@ -77,6 +76,9 @@
         a:hover{
             color: #ff4d4d;
         }
+        .red{
+            color: #ff4d4d;
+        }
     </style>
 </head>
 <body>
@@ -102,7 +104,8 @@
                 <div class="item">
                     <img th:src="${item.image}" alt="Item image">
                     <h3 th:text="${item.name}"></h3>
-                    <p th:text="'$' + ${item.price}"></p>
+                    <p th:if="${item.quantity > 0}" th:text="'$' + ${item.price}"></p>
+                    <p th:unless="${item.quantity > 0}" class="red">OUT OF STOCK</p>
                 </div>
             </a>
         </div>
