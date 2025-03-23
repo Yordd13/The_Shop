@@ -41,7 +41,7 @@ public class CategoryService {
 
         for (Category category : categories) {
             int count = (int) category.getProducts().stream()
-                    .filter(product -> product.getQuantity() > 0)
+                    .filter(Product::isVisible)
                     .count();
             activeProductCounts.put(category.getId(), count);
         }

@@ -8,13 +8,11 @@ import app.products.repository.ProductRepository;
 import app.user.model.User;
 import app.web.dto.NewProductRequest;
 import app.web.dto.OrderProductsQuantityDecreaseEvent;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -74,9 +72,6 @@ public class ProductService {
         }
         product.setQuantity(product.getQuantity() - quantity);
 
-        if(product.getQuantity() == 0) {
-            product.setVisible(false);
-        }
         productRepository.save(product);
     }
 
@@ -87,10 +82,18 @@ public class ProductService {
     public void deleteProductsByUser(User user) {
         List<Product> products = productRepository.getProductsBySeller(user);
         products.forEach(product -> {
-            product.setQuantity(0);
             product.setVisible(false);
             productRepository.save(product);
         });
+    }
+
+    public List<Product> getAllProductsOutOfStockForTheTimeLimit(LocalDateTime fourHoursAgo) {
+        return productRepository.findOutOfStockBefore(fourHoursAgo);
+    }
+
+    public void hideProduct(Product product) {
+        product.setVisible(false);
+        productRepository.save(product);
     }
 }
 

@@ -116,6 +116,13 @@
             color: gray;
             margin-top: 10px;
         }
+        .out-of-stock {
+            font-size: 22px;
+            font-weight: bold;
+            color: red;
+            text-align: center;
+            margin-top: auto;
+        }
     </style>
     <script>
         function toggleDescription() {
@@ -159,11 +166,14 @@
                      th:attr="data-full-description=${product.description}">
                 </div>
             </div>
-            <div class="right-footer">
+            <div th:if="${product.quantity > 0}" class="right-footer">
                 <div class="stock">In stock: <span th:text="${product.quantity}"></span></div>
                 <form th:action="@{'/products/' + ${product.id} + '/add'}" method="post">
                     <button type="submit" class="buy">BUY</button>
                 </form>
+            </div>
+            <div th:unless="${product.quantity > 0}" class="out-of-stock">
+                OUT OF STOCK
             </div>
         </div>
 
