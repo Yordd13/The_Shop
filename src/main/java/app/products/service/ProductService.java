@@ -39,6 +39,11 @@ public class ProductService {
     }
 
     public void addNewProduct(NewProductRequest newProductRequest, User user) {
+
+        if (user.isBannedFromSelling()) {
+            throw new DomainException("You are banned from selling!");
+        }
+
         Product product = Product
                 .builder()
                 .name(newProductRequest.getName())
