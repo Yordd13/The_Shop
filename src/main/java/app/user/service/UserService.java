@@ -166,9 +166,7 @@ public class UserService implements UserDetailsService {
             productService.deleteProductsByUser(user);
             orderItemService.deleteOrderItemsByUserThatAreNull(user);
         }
-        if(user.getRoles().contains(UserRole.SELLER)){
-            user.getRoles().remove(UserRole.SELLER);
-        }
+        user.getRoles().remove(UserRole.SELLER);
 
         userRepository.save(user);
     }
