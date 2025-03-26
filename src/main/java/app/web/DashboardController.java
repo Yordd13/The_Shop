@@ -158,4 +158,14 @@ public class DashboardController {
 
         return new ModelAndView("redirect:/dashboard/seller");
     }
+
+    @PreAuthorize("hasAnyRole('SELLER')")
+    @GetMapping("/discontinue/{productId}")
+    public String discontinue(@PathVariable UUID productId) {
+        Product product = productService.getById(productId);
+
+        productService.discontinueProduct(product);
+
+        return "redirect:/dashboard/seller";
+    }
 }

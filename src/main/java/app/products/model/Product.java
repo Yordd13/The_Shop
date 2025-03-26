@@ -59,4 +59,7 @@ public class Product {
 
     @Column(nullable = false)
     private boolean isVisible;
+
+    @Column(nullable = false)
+    private boolean isDiscontinued;
 }

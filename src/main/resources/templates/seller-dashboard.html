@@ -143,6 +143,28 @@
       background-color: darkgreen;
       transform: scale(1.1);
     }
+    .discontinue-btn{
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 35px;
+      height: 35px;
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.2s, background-color 0.2s;
+    }
+    .discontinue-btn{
+      background-color: #ff2424;
+      transform: scale(1.1);
+    }
   </style>
 </head>
 <body>
@@ -171,6 +193,8 @@
       <div class="item" th:each="item : ${products}">
         <a th:href="@{'/dashboard/update/'+${item.id}}"
            class="add-btn">+</a>
+        <a th:unless="${item.quantity > 0}" th:href="@{'/dashboard/discontinue/'+${item.id}}"
+           class="discontinue-btn">x</a>
         <img th:src="${item.image}" alt="Item image">
         <h3 th:text="${item.name}"></h3>
         <p th:if="${item.quantity > 0}" th:text="'$' + ${item.price}"></p>

@@ -58,6 +58,7 @@ public class ProductService {
                 .quantity(newProductRequest.getQuantity())
                 .seller(user)
                 .isVisible(true)
+                .isDiscontinued(false)
                 .build();
 
         productRepository.save(product);
@@ -107,6 +108,12 @@ public class ProductService {
         product.setQuantity
                 (product.getQuantity() + updateQuantityRequest.getQuantity());
         product.setVisible(true);
+        productRepository.save(product);
+    }
+
+    public void discontinueProduct(Product product) {
+        product.setDiscontinued(true);
+        product.setVisible(false);
         productRepository.save(product);
     }
 }
