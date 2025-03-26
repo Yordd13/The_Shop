@@ -151,4 +151,18 @@ public class OrderItemService {
     public BigDecimal getProfit(User user, LocalDateTime localDateTime) {
         return getTotalProfit(orderItemRepository.getOrderItemsByUserAndTimestamp(user,localDateTime));
     }
+
+    public boolean containsProductWithOrderNotNull(Product product) {
+        List<OrderItem> orderItems = orderItemRepository.getOrderItemsByProductWhereOrderIsNotNull(product);
+        if(orderItems.isEmpty()){
+            List<OrderItem> orderItems1 = orderItemRepository.getOrderItemsByProductWhereOrderIsNull(product);
+            if(!orderItems1.isEmpty()){
+                for(OrderItem orderItem : orderItems1){
+                    deleteOrderItem(orderItem.getId());
+                }
+            }
+            return false;
+        }
+        return true;
+    }
 }

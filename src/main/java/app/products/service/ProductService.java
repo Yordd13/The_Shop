@@ -3,6 +3,7 @@ package app.products.service;
 
 import app.category.model.Category;
 import app.exception.DomainException;
+import app.orderItem.service.OrderItemService;
 import app.products.model.Product;
 import app.products.repository.ProductRepository;
 import app.user.model.User;
@@ -25,10 +26,12 @@ import java.util.UUID;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final OrderItemService orderItemService;
 
     @Autowired
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, OrderItemService orderItemService) {
         this.productRepository = productRepository;
+        this.orderItemService = orderItemService;
     }
 
     public Product getById(UUID productId) {
@@ -58,7 +61,7 @@ public class ProductService {
                 .quantity(newProductRequest.getQuantity())
                 .seller(user)
                 .isVisible(true)
-                .isDiscontinued(false)
+                .isRemoved(false)
                 .build();
 
         productRepository.save(product);
@@ -95,6 +98,16 @@ public class ProductService {
         });
     }
 
+    public void setProductsToBeVisibleAgain(User user) {
+        List<Product> products = productRepository.getProductsBySeller(user);
+        products.forEach(product -> {
+            if(!product.isRemoved() && product.getQuantity() > 0) {
+                product.setVisible(true);
+            }
+            productRepository.save(product);
+        });
+    }
+
     public List<Product> getAllProductsOutOfStockForTheTimeLimit(LocalDateTime fourHoursAgo) {
         return productRepository.findOutOfStockBefore(fourHoursAgo);
     }
@@ -111,10 +124,15 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public void discontinueProduct(Product product) {
-        product.setDiscontinued(true);
-        product.setVisible(false);
-        productRepository.save(product);
+    public void removeProduct(Product product) {
+        if(!orderItemService.containsProductWithOrderNotNull(product)){
+           productRepository.delete(product);
+        } else{
+            product.setRemoved(true);
+            product.setVisible(false);
+            productRepository.save(product);
+        }
     }
+
 }
 

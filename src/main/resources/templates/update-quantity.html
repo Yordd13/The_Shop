@@ -85,7 +85,7 @@
         </div>
     </div>
 
-    <form th:action="@{'/dashboard/update/'+${product.id}}" th:object="${UpdateQuantityRequest}" th:method="PUT">
+    <form th:action="@{'/products/update/'+${product.id}}" th:object="${UpdateQuantityRequest}" th:method="PUT">
         <div class="quantity-controls">
             <input type="number" th:field="*{quantity}"
                    class="quantity-input" min="1" value="1">

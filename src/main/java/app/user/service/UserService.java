@@ -165,6 +165,8 @@ public class UserService implements UserDetailsService {
         if(user.isBannedFromSelling()){
             productService.deleteProductsByUser(user);
             orderItemService.deleteOrderItemsByUserThatAreNull(user);
+        } else{
+            productService.setProductsToBeVisibleAgain(user);
         }
         user.getRoles().remove(UserRole.SELLER);
 

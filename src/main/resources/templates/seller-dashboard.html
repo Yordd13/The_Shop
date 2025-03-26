@@ -80,12 +80,13 @@
       font-size: 28px;
       font-weight: bold;
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 40px;
+      margin-top: 20px;
     }
     .category-items {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 40px;
+      gap: 60px;
       justify-content: center;
     }
     .item {
@@ -125,8 +126,8 @@
       position: absolute;
       top: 3px;
       left: 3px;
-      width: 35px;
-      height: 35px;
+      width: 33px;
+      height: 33px;
       background-color: green;
       color: white;
       border: none;
@@ -143,7 +144,7 @@
       background-color: darkgreen;
       transform: scale(1.1);
     }
-    .discontinue-btn{
+    .remove-btn {
       position: absolute;
       top: 3px;
       right: 3px;
@@ -161,7 +162,7 @@
       align-items: center;
       transition: transform 0.2s, background-color 0.2s;
     }
-    .discontinue-btn{
+    .remove-btn:hover{
       background-color: #ff2424;
       transform: scale(1.1);
     }
@@ -191,10 +192,10 @@
     <div class="items-out">Items on the market</div>
     <div class="category-items">
       <div class="item" th:each="item : ${products}">
-        <a th:href="@{'/dashboard/update/'+${item.id}}"
+        <a th:href="@{'/products/update/'+${item.id}}"
            class="add-btn">+</a>
-        <a th:unless="${item.quantity > 0}" th:href="@{'/dashboard/discontinue/'+${item.id}}"
-           class="discontinue-btn">x</a>
+        <a th:href="@{'/products/remove/'+${item.id}}"
+           class="remove-btn">X</a>
         <img th:src="${item.image}" alt="Item image">
         <h3 th:text="${item.name}"></h3>
         <p th:if="${item.quantity > 0}" th:text="'$' + ${item.price}"></p>

@@ -9,15 +9,14 @@ import app.security.AuthenticationDetails;
 import app.user.model.User;
 import app.user.service.UserService;
 import app.web.dto.NewProductRequest;
+import app.web.dto.UpdateQuantityRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -103,6 +102,58 @@ public class ProductController {
         userService.addSellerRole(user);
 
         return new ModelAndView("redirect:/categories");
+    }
+
+    @PreAuthorize("hasAnyRole('SELLER')")
+    @GetMapping("/update/{productId}")
+    public ModelAndView showUpdateForm(@PathVariable UUID productId, @AuthenticationPrincipal AuthenticationDetails authenticationDetails) {
+        ModelAndView mav = new ModelAndView("update-quantity");
+        User user = userService.getById(authenticationDetails.getUserId());
+        int cartQuantity = userService.getOrderQuantity(user);
+        Product product = productService.getById(productId);
+
+        mav.addObject("user", user);
+        mav.addObject("cartQuantity", cartQuantity);
+        mav.addObject("product", product);
+        mav.addObject("UpdateQuantityRequest",new UpdateQuantityRequest());
+
+        return mav;
+    }
+
+
+    @PreAuthorize("hasAnyRole('SELLER')")
+    @PutMapping("/update/{productId}")
+    public ModelAndView updateQuantity(@PathVariable UUID productId, @Valid UpdateQuantityRequest UpdateQuantityRequest, BindingResult bindingResult, @AuthenticationPrincipal AuthenticationDetails authenticationDetails) {
+
+        User user = userService.getById(authenticationDetails.getUserId());
+        Product product = productService.getById(productId);
+
+        if(bindingResult.hasErrors()) {
+            int cartQuantity = userService.getOrderQuantity(user);
+
+            ModelAndView mav = new ModelAndView("update-quantity");
+            mav.addObject("user", user);
+            mav.addObject("cartQuantity", cartQuantity);
+            mav.addObject("product", product);
+            mav.addObject("UpdateQuantityRequest", UpdateQuantityRequest);
+
+            return mav;
+        }
+
+        //update the product
+        productService.updateQuantity(product,UpdateQuantityRequest);
+
+        return new ModelAndView("redirect:/dashboard/seller");
+    }
+
+    @PreAuthorize("hasAnyRole('SELLER')")
+    @GetMapping("/remove/{productId}")
+    public String removeProduct(@PathVariable UUID productId) {
+        Product product = productService.getById(productId);
+
+        productService.removeProduct(product);
+
+        return "redirect:/dashboard/seller";
     }
 }
 

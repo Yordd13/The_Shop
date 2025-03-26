@@ -6,13 +6,10 @@ import app.products.service.ProductService;
 import app.security.AuthenticationDetails;
 import app.user.model.User;
 import app.user.service.UserService;
-import app.web.dto.UpdateQuantityRequest;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -20,7 +17,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/dashboard")
@@ -28,16 +24,14 @@ public class DashboardController {
 
     private final UserService userService;
     private final OrderItemService orderItemService;
-    private final ProductService productService;
 
     @Autowired
-    public DashboardController(UserService userService, OrderItemService orderItemService, ProductService productService) {
+    public DashboardController(UserService userService, OrderItemService orderItemService) {
         this.userService = userService;
         this.orderItemService = orderItemService;
-        this.productService = productService;
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin")
     public ModelAndView getAdminPage(@AuthenticationPrincipal AuthenticationDetails authenticationDetails){
 
@@ -53,37 +47,8 @@ public class DashboardController {
         return mav;
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    @GetMapping("/users/toggle-status/{username}")
-    public String changeStatus(@PathVariable String username){
 
-        User user = userService.getByUsername(username);
-        userService.changeStatus(user);
-
-        return "redirect:/dashboard/admin";
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    @GetMapping("/users/toggle-ban/{username}")
-    public String changeBan(@PathVariable String username){
-
-        User user = userService.getByUsername(username);
-        userService.changeBanFromSelling(user);
-
-        return "redirect:/dashboard/admin";
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    @GetMapping("/users/toggle-role/{username}")
-    public String changeRole(@PathVariable String username){
-
-        User user = userService.getByUsername(username);
-        userService.changeRole(user);
-
-        return "redirect:/dashboard/admin";
-    }
-
-    @PreAuthorize("hasAnyRole('SELLER')")
+    @PreAuthorize("hasRole('SELLER')")
     @GetMapping("/seller")
     public ModelAndView getSellerPage(@AuthenticationPrincipal AuthenticationDetails authenticationDetails){
         User user = userService.getById(authenticationDetails.getUserId());
@@ -101,6 +66,7 @@ public class DashboardController {
                 .multiply(new BigDecimal("0.95"));
 
         List<Product> products = user.getProductsForSale().stream()
+                .filter(product -> !product.isRemoved())
                 .sorted(Comparator.comparingInt(product -> product.getQuantity() == 0 ? 0 : 1))
                 .toList();
 
@@ -118,54 +84,4 @@ public class DashboardController {
         return mav;
     }
 
-    @PreAuthorize("hasAnyRole('SELLER')")
-    @GetMapping("/update/{productId}")
-    public ModelAndView showUpdateForm(@PathVariable UUID productId, @AuthenticationPrincipal AuthenticationDetails authenticationDetails) {
-        ModelAndView mav = new ModelAndView("update-quantity");
-        User user = userService.getById(authenticationDetails.getUserId());
-        int cartQuantity = userService.getOrderQuantity(user);
-        Product product = productService.getById(productId);
-
-        mav.addObject("user", user);
-        mav.addObject("cartQuantity", cartQuantity);
-        mav.addObject("product", product);
-        mav.addObject("UpdateQuantityRequest",new UpdateQuantityRequest());
-
-        return mav;
-    }
-
-    @PreAuthorize("hasAnyRole('SELLER')")
-    @PutMapping("/update/{productId}")
-    public ModelAndView updateQuantity(@PathVariable UUID productId, @Valid UpdateQuantityRequest UpdateQuantityRequest, BindingResult bindingResult, @AuthenticationPrincipal AuthenticationDetails authenticationDetails) {
-
-        User user = userService.getById(authenticationDetails.getUserId());
-        Product product = productService.getById(productId);
-
-        if(bindingResult.hasErrors()) {
-            int cartQuantity = userService.getOrderQuantity(user);
-
-            ModelAndView mav = new ModelAndView("update-quantity");
-            mav.addObject("user", user);
-            mav.addObject("cartQuantity", cartQuantity);
-            mav.addObject("product", product);
-            mav.addObject("UpdateQuantityRequest", UpdateQuantityRequest);
-
-            return mav;
-        }
-
-        //update the product
-        productService.updateQuantity(product,UpdateQuantityRequest);
-
-        return new ModelAndView("redirect:/dashboard/seller");
-    }
-
-    @PreAuthorize("hasAnyRole('SELLER')")
-    @GetMapping("/discontinue/{productId}")
-    public String discontinue(@PathVariable UUID productId) {
-        Product product = productService.getById(productId);
-
-        productService.discontinueProduct(product);
-
-        return "redirect:/dashboard/seller";
-    }
 }

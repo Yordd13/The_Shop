@@ -46,7 +46,6 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
-
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
     private List<OrderItem> orderItems = new ArrayList<>();
 
@@ -61,5 +60,5 @@ public class Product {
     private boolean isVisible;
 
     @Column(nullable = false)
-    private boolean isDiscontinued;
+    private boolean isRemoved;
 }

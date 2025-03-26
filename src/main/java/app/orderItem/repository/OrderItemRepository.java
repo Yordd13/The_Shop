@@ -2,6 +2,7 @@ package app.orderItem.repository;
 
 import app.order.model.Order;
 import app.orderItem.model.OrderItem;
+import app.products.model.Product;
 import app.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -31,4 +32,10 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, UUID> {
 
     @Query("SELECT o FROM OrderItem o JOIN o.order ord WHERE o.product.seller = :user AND ord.orderDate >= :timestamp")
     List<OrderItem> getOrderItemsByUserAndTimestamp(User user, LocalDateTime timestamp);
+
+    @Query("SELECT o FROM OrderItem o WHERE o.product = :product AND o.order IS NOT NULL")
+    List<OrderItem> getOrderItemsByProductWhereOrderIsNotNull(Product product);
+
+    @Query("SELECT o FROM OrderItem o WHERE o.product = :product AND o.order IS NULL")
+    List<OrderItem> getOrderItemsByProductWhereOrderIsNull(Product product);
 }

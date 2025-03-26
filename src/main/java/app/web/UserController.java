@@ -9,6 +9,7 @@ import app.web.dto.UserEditRequest;
 import app.web.mapper.DtoMapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -90,5 +91,35 @@ public class UserController {
         emailService.saveNotificationPreference(user.getId(),!isEnabled,user.getEmail());
 
         return "redirect:/users/profile/"+user.getUsername();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/users/toggle-status/{username}")
+    public String changeStatus(@PathVariable String username){
+
+        User user = userService.getByUsername(username);
+        userService.changeStatus(user);
+
+        return "redirect:/dashboard/admin";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/users/toggle-ban/{username}")
+    public String changeBan(@PathVariable String username){
+
+        User user = userService.getByUsername(username);
+        userService.changeBanFromSelling(user);
+
+        return "redirect:/dashboard/admin";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/users/toggle-role/{username}")
+    public String changeRole(@PathVariable String username){
+
+        User user = userService.getByUsername(username);
+        userService.changeRole(user);
+
+        return "redirect:/dashboard/admin";
     }
 }
