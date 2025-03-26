@@ -1,0 +1,58 @@
+body {
+    font-family: 'Lato', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: url('/static/images/online-shopping-4532460.jpg') no-repeat center center/cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.title {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 100px;
+    font-weight: bold;
+    background: linear-gradient(45deg, #ff6b6b, #ff4757, #ba55d3, #ff6b6b, #ff7f50, #da70d6, #ff6b6b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    white-space: nowrap;
+}
+
+.home-actions {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 16px;
+}
+
+.btn {
+    padding: 12px 24px;
+    font-size: 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+}
+
+.btn-register {
+    background-color: #007BFF;
+}
+
+.btn-register:hover {
+    background-color: #005bb5;
+}
+
+.btn-login {
+    background-color: #28a745;
+}
+
+.btn-login:hover {
+    background-color: #1e7e34;
+}

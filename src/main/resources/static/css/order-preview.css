@@ -1,0 +1,78 @@
+body {
+    font-family: 'Lato', sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+.order-container {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 900px;
+    text-align: center;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+th, td {
+    padding: 20px;
+    text-align: center;
+    font-size: 18px;
+}
+thead {
+    background-color: #333;
+    color: white;
+}
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+tbody tr:hover {
+    background-color: #ddd;
+}
+th {
+    font-size: 20px;
+}
+.button-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.button {
+    background: #333;
+    color: white;
+    padding: 16px 32px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 20px;
+}
+.total-price {
+    font-size: 24px;
+    font-weight: bold;
+}
+.product-image {
+    width: 70px;
+    height: 70px;
+    border-radius: 5px;
+}
+.product-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 10px;
+}
+.order-footer {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #555;
+}

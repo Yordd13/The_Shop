@@ -1,4 +1,3 @@
-/* Navigation Bar */
 nav {
     background-color: #333;
     color: #fff;
@@ -13,7 +12,6 @@ nav {
     z-index: 1000;
 }
 
-/* Left side: Logo */
 .nav-left a {
     text-decoration: none;
     color: #fff;
@@ -27,7 +25,6 @@ nav {
     -webkit-text-fill-color: transparent;
 }
 
-/* Right side: Navigation */
 .nav-right {
     display: flex;
     align-items: center;
@@ -35,7 +32,6 @@ nav {
     font-size: 24px;
 }
 
-/* Move first two items (Categories & Order) to the left */
 .nav-right ul {
     list-style: none;
     padding: 0;
@@ -44,13 +40,11 @@ nav {
     margin: 0 auto 0 0;
 }
 
-/* Align items in <ul> */
 .nav-right ul li {
     display: flex;
     align-items: center;
 }
 
-/* Style nav links */
 .nav-right ul li a {
     text-decoration: none;
     color: #fff;
@@ -62,11 +56,10 @@ nav {
     color: #ff4d4d;
 }
 
-/* Group Profile Picture & Logout Button Closer */
 .user-actions {
     display: flex;
     align-items: center;
-    gap: 15px; /* Reduce spacing between profile picture and logout */
+    gap: 15px;
 }
 
 .user-actions a{
@@ -74,7 +67,6 @@ nav {
     align-items: center;
 }
 
-/* Profile Picture */
 .profile-picture {
     max-width: 40px;
     max-height: 40px;
@@ -82,7 +74,6 @@ nav {
     object-fit: cover;
 }
 
-/* Logout Button */
 .logout-form {
     margin: 0;
     padding: 0;
@@ -99,10 +90,9 @@ nav {
 }
 
 .logout-form button:hover {
-    color: #ff4d4d; /* Red color on hover */
+    color: #ff4d4d;
 }
 
-/* Shopping Cart Icon */
 .shopping-cart {
     position: relative;
     text-decoration: none;
@@ -115,11 +105,10 @@ nav {
     color: #ff4d4d;
 }
 
-/* Green Circle for Cart Count */
 .cart-count {
     position: absolute;
-    top: 15px; /* Adjust as needed */
-    right: -10px; /* Adjust as needed */
+    top: 15px;
+    right: -10px;
     background-color: green;
     color: white;
     border-radius: 50%;
