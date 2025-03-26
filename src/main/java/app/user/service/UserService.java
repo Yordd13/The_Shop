@@ -16,6 +16,7 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -165,15 +166,18 @@ public class UserService implements UserDetailsService {
         if(user.isBannedFromSelling()){
             productService.deleteProductsByUser(user);
             orderItemService.deleteOrderItemsByUserThatAreNull(user);
+            user.getRoles().remove(UserRole.SELLER);
         } else{
-            productService.setProductsToBeVisibleAgain(user);
+            boolean result = productService.setProductsToBeVisibleAgain(user);
+            if(result){
+                user.getRoles().add(UserRole.SELLER);
+            }
         }
-        user.getRoles().remove(UserRole.SELLER);
 
         userRepository.save(user);
     }
 
-    public void changeRole(User user) {
+    public boolean changeRole(User user, User currentUser) {
         if(user.getRoles().contains(UserRole.ADMIN)){
             user.getRoles().remove(UserRole.ADMIN);
             user.getRoles().add(UserRole.USER);
@@ -183,5 +187,11 @@ public class UserService implements UserDetailsService {
         }
 
         userRepository.save(user);
+
+        if(user.getUsername().equals(currentUser.getUsername())){
+            SecurityContextHolder.clearContext();
+            return true;
+        }
+        return false;
     }
 }

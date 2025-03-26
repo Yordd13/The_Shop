@@ -10,7 +10,6 @@ import app.user.model.User;
 import app.web.dto.NewProductRequest;
 import app.web.dto.OrderProductsQuantityDecreaseEvent;
 import app.web.dto.UpdateQuantityRequest;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -20,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 @Service
@@ -98,14 +98,18 @@ public class ProductService {
         });
     }
 
-    public void setProductsToBeVisibleAgain(User user) {
+    public boolean setProductsToBeVisibleAgain(User user) {
+        AtomicBoolean result = new AtomicBoolean(false);
         List<Product> products = productRepository.getProductsBySeller(user);
         products.forEach(product -> {
             if(!product.isRemoved() && product.getQuantity() > 0) {
                 product.setVisible(true);
+                result.set(true);
             }
             productRepository.save(product);
         });
+
+        return result.get();
     }
 
     public List<Product> getAllProductsOutOfStockForTheTimeLimit(LocalDateTime fourHoursAgo) {

@@ -115,10 +115,15 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users/toggle-role/{username}")
-    public String changeRole(@PathVariable String username){
+    public String changeRole(@PathVariable String username , @AuthenticationPrincipal AuthenticationDetails authenticationDetails){
 
+        User currentUser = userService.getById(authenticationDetails.getUserId());
         User user = userService.getByUsername(username);
-        userService.changeRole(user);
+        boolean selfRoleChange = userService.changeRole(user,currentUser);
+
+        if(selfRoleChange){
+            return "redirect:/logout";
+        }
 
         return "redirect:/dashboard/admin";
     }

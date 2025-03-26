@@ -39,8 +39,6 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                 )
         ;
 
-        //.requestMatchers("/users").hasRole("ADMIN") ili v controlera
-
         return http.build();
     }
 }
