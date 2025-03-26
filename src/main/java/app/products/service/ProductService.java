@@ -8,6 +8,8 @@ import app.products.repository.ProductRepository;
 import app.user.model.User;
 import app.web.dto.NewProductRequest;
 import app.web.dto.OrderProductsQuantityDecreaseEvent;
+import app.web.dto.UpdateQuantityRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -98,6 +100,13 @@ public class ProductService {
 
     public void hideProduct(Product product) {
         product.setVisible(false);
+        productRepository.save(product);
+    }
+
+    public void updateQuantity(Product product, UpdateQuantityRequest updateQuantityRequest) {
+        product.setQuantity
+                (product.getQuantity() + updateQuantityRequest.getQuantity());
+        product.setVisible(true);
         productRepository.save(product);
     }
 }
