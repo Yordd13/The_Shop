@@ -33,6 +33,7 @@ public class ProductInit implements CommandLineRunner {
         }
 
         User seller = userService.getByUsername("admin123");
+        userService.addSellerRole(seller);
 
         NewProductRequest newProductRequest1 = NewProductRequest
                 .builder()

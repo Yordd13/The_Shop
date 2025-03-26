@@ -10,10 +10,10 @@ import app.user.model.User;
 import app.web.dto.UserOrderItemsToOrderEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -126,5 +126,29 @@ public class OrderItemService {
     public void deleteOrderItemsByUserThatAreNull(User user) {
         List<OrderItem> orderItems = orderItemRepository.deleteOrderItemsByUser(user);
         orderItemRepository.deleteAll(orderItems);
+    }
+
+    public int getCountOfOrderItems(List<OrderItem> orderItems) {
+        int count = 0;
+        for (OrderItem orderItem : orderItems) {
+            count += orderItem.getQuantity();
+        }
+        return count;
+    }
+
+    public BigDecimal getTotalProfit(List<OrderItem> orderItems) {
+        BigDecimal totalProfit = BigDecimal.ZERO;
+        for (OrderItem orderItem : orderItems) {
+            totalProfit = totalProfit.add(BigDecimal.valueOf(orderItem.getQuantity()).multiply(orderItem.getProduct().getPrice()));
+        }
+        return totalProfit;
+    }
+
+    public int getSales(User user, LocalDateTime localDateTime) {
+        return getCountOfOrderItems(orderItemRepository.getOrderItemsByUserAndTimestamp(user, localDateTime));
+    }
+
+    public BigDecimal getProfit(User user, LocalDateTime localDateTime) {
+        return getTotalProfit(orderItemRepository.getOrderItemsByUserAndTimestamp(user,localDateTime));
     }
 }

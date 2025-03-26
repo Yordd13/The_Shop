@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales Dashboard</title>
+  <link rel="stylesheet" href="/css/navbar.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/css/home.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Lato', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f4;
+      margin-top: 50px;
+    }
+    .dashboard {
+      width: 100vw;
+      height: 100vh;
+      background: white;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      align-items: stretch;
+      border-bottom: 4px solid black;
+      padding-bottom: 20px;
+    }
+    .section {
+      width: 48%;
+      padding: 40px;
+      background: #e3e3e3;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .section h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+    .section p {
+      font-size: 24px;
+      margin: 10px 0;
+    }
+    .footer {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #555;
+    }
+    .items-out-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      flex-grow: 1;
+      padding-top: 20px;
+    }
+    .items-out {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<header th:replace="~{fragments/navbar::nav}"></header>
+
+<div class="dashboard">
+  <div class="stats">
+    <div class="section">
+      <h2>Profit</h2>
+      <p>Last 24 hours: <strong th:text="'$'+${profitLast24hours}"></strong></p>
+      <p>Last month: <strong th:text="'$'+${profitLastMonth}"></strong></p>
+      <p>Last year: <strong th:text="'$'+${profitLastYear}"></strong></p>
+      <div class="footer">There is a 5% commission</div>
+    </div>
+    <div class="section">
+      <h2>Sells</h2>
+      <p>Last 24 hours: <strong th:text="${salesLast24hours}"></strong></p>
+      <p>Last month: <strong th:text="${salesLastMonth}"></strong></p>
+      <p>Last year: <strong th:text="${salesLastYear}"></strong></p>
+    </div>
+  </div>
+  <div class="items-out-container">
+    <div class="items-out">Items out of stock:</div>
+  </div>
+</div>
+</body>
+</html>

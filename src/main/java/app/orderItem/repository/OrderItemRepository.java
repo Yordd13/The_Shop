@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,4 +28,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, UUID> {
 
     @Query("SELECT o FROM OrderItem o WHERE o.product.seller = :user AND o.order IS NULL")
     List<OrderItem> deleteOrderItemsByUser(User user);
+
+    @Query("SELECT o FROM OrderItem o JOIN o.order ord WHERE o.product.seller = :user AND ord.orderDate >= :timestamp")
+    List<OrderItem> getOrderItemsByUserAndTimestamp(User user, LocalDateTime timestamp);
 }
