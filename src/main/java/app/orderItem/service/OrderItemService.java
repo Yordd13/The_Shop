@@ -103,15 +103,23 @@ public class OrderItemService {
         List<OrderItem> orderItems = getOrderItemsByUser(event.getUser());
 
         orderItems.forEach(orderItem -> {
+            String body = String.format(
+                    "Congratulations! You have successfully sold %d units of your product \"%s\". " +
+                            "Thank you for using our platform, and we appreciate your continued business.",
+                    orderItem.getQuantity(),
+                    orderItem.getProduct().getName()
+            );
 
-            String body = "You successfully sold " + orderItem.getQuantity() + " items from your product " + orderItem.getProduct().getName();
-
-            emailService.sendNotification(orderItem.getProduct().getSeller().getId(),"Sold product",body);
-
+            emailService.sendNotification(
+                    orderItem.getProduct().getSeller().getId(),
+                    "Product Sold Notification",
+                    body
+            );
 
             orderItem.setOrder(event.getOrder());
             orderItemRepository.save(orderItem);
         });
+
     }
 
     public void deleteOrderItem(UUID orderItemId) {
