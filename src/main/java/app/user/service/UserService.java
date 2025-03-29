@@ -188,10 +188,6 @@ public class UserService implements UserDetailsService {
 
         userRepository.save(user);
 
-        if(user.getUsername().equals(currentUser.getUsername())){
-            SecurityContextHolder.clearContext();
-            return true;
-        }
-        return false;
+        return user.getUsername().equals(currentUser.getUsername());
     }
 }

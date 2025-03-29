@@ -1,6 +1,7 @@
 package app.user;
 
 import app.email.service.EmailService;
+import app.exception.RegistrationException;
 import app.order.model.Order;
 import app.orderItem.model.OrderItem;
 import app.orderItem.service.OrderItemService;
@@ -9,16 +10,20 @@ import app.user.model.User;
 import app.user.model.UserRole;
 import app.user.repository.UserRepository;
 import app.user.service.UserService;
+import app.web.dto.RegisterRequest;
 import app.web.dto.UserEditRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -206,7 +211,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void givenExistingUser_whenChangeStatus_thenChangeHisStatus() {
+    void givenExistingUserWithActiveStatus_whenChangeStatus_thenChangeHisStatusToInactive() {
 
         //Given
         User user = User
@@ -223,4 +228,184 @@ public class UserServiceTest {
         verify(userRepository,times(1)).save(user);
 
     }
+    @Test
+    void givenExistingUserWithInactiveStatus_whenChangeStatus_thenChangeHisStatusToActive() {
+
+        //Given
+        User user = User
+                .builder()
+                .isActive(false)
+                .build();
+
+        //When
+        userService.changeStatus(user);
+
+        //Then
+        assertTrue(user.isActive());
+
+        verify(userRepository,times(1)).save(user);
+
+    }
+
+    @Test
+    void givenExistingUserWithRoleAdmin_whenChangeRoleOfAnotherUserFromAdminToUser_thenChangeHisRoleToUser() {
+
+        //Given
+        User adminUser = User
+                .builder()
+                .roles(new ArrayList<>(List.of(UserRole.ADMIN)))
+                .username("admin")
+                .build();
+        User currentUser = User
+                .builder()
+                .roles(new ArrayList<>(List.of(UserRole.ADMIN)))
+                .username("current")
+                .build();
+
+        //When
+        boolean result = userService.changeRole(adminUser, currentUser);
+
+        //Then
+        assertFalse(result);
+        assertFalse(adminUser.getRoles().contains(UserRole.ADMIN));
+        assertTrue(adminUser.getRoles().contains(UserRole.USER));
+
+        verify(userRepository, times(1)).save(adminUser);
+    }
+
+    @Test
+    void givenExistingUserWithRoleAdmin_whenChangeRoleOfAnotherUserFromUserToAdmin_thenChangeHisRoleToUser() {
+
+        //Given
+        User normalUser = User
+                .builder()
+                .roles(new ArrayList<>(List.of(UserRole.USER)))
+                .username("admin")
+                .build();
+        User currentUser = User
+                .builder()
+                .roles(new ArrayList<>(List.of(UserRole.ADMIN)))
+                .username("current")
+                .build();
+
+        //Then
+        boolean result = userService.changeRole(normalUser, currentUser);
+
+        //Given
+        assertFalse(result);
+        assertFalse(normalUser.getRoles().contains(UserRole.USER));
+        assertTrue(normalUser.getRoles().contains(UserRole.ADMIN));
+
+        verify(userRepository, times(1)).save(normalUser);
+    }
+
+    @Test
+    void givenExistingUserWithRoleAdmin_whenChangeHisPersonalRoleFromAdminToUser_thenChangeHisPersonalRoleToUserAndClearTheContext() {
+
+        //Given
+        User currentUser = User
+                .builder()
+                .roles(new ArrayList<>(List.of(UserRole.ADMIN)))
+                .username("current")
+                .build();
+
+        //When
+        boolean result = userService.changeRole(currentUser, currentUser);
+
+        //Then
+        assertTrue(result);
+        assertFalse(currentUser.getRoles().contains(UserRole.ADMIN));
+        assertTrue(currentUser.getRoles().contains(UserRole.USER));
+
+        verify(userRepository, times(1)).save(currentUser);
+
+    }
+
+    @Test
+    void givenUserWithExistingUsernameAndExistingEmail_whenRegister_thenThrowException() {
+
+        //Given
+        RegisterRequest registerRequest = RegisterRequest.builder()
+                .username("username")
+                .email("email@gmail.com")
+                .password("123456789")
+                .build();
+        when(userRepository.findByUsername(any())).thenReturn(Optional.of(User.builder().build()));
+        when(userRepository.findByEmail(any())).thenReturn(Optional.of(User.builder().build()));
+
+        //When and Then
+        assertThrows(RegistrationException.class, () -> userService.register(registerRequest));
+
+        verify(userRepository,never()).save(any());
+        verify(emailService,never()).saveNotificationPreference(any(UUID.class),anyBoolean(),anyString());
+
+    }
+
+    @Test
+    void givenUserWithExistingUsernameAndUniqueEmail_whenRegister_thenThrowException() {
+
+        //Given
+        RegisterRequest registerRequest = RegisterRequest.builder()
+                .username("username")
+                .email("email@gmail.com")
+                .password("123456789")
+                .build();
+        when(userRepository.findByUsername(any())).thenReturn(Optional.of(User.builder().build()));
+        when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
+
+        //When and Then
+        assertThrows(RegistrationException.class, () -> userService.register(registerRequest));
+
+        verify(userRepository,never()).save(any());
+        verify(emailService,never()).saveNotificationPreference(any(UUID.class),anyBoolean(),anyString());
+
+    }
+
+    @Test
+    void givenUserWithUniqueUsernameAndExistingEmail_whenRegister_thenThrowException() {
+
+        //Given
+        RegisterRequest registerRequest = RegisterRequest.builder()
+                .username("username")
+                .email("email@gmail.com")
+                .password("123456789")
+                .build();
+        when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(any())).thenReturn(Optional.of(User.builder().build()));
+
+        //When and Then
+        assertThrows(RegistrationException.class, () -> userService.register(registerRequest));
+
+        verify(userRepository,never()).save(any());
+        verify(emailService,never()).saveNotificationPreference(any(UUID.class),anyBoolean(),anyString());
+
+    }
+
+    @Test
+    void givenUserWithUniqueUsernameAndUniqueEmail_whenRegister_thenRegisterSuccessfully() {
+
+        // Given
+        RegisterRequest registerRequest = RegisterRequest.builder()
+                .username("username")
+                .email("email@gmail.com")
+                .password("123456789")
+                .build();
+
+        User user = User.builder()
+                .id(UUID.randomUUID())
+                .username(registerRequest.getUsername())
+                .email(registerRequest.getEmail())
+                .build();
+
+        when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        // When and Then
+        assertDoesNotThrow(() -> userService.register(registerRequest));
+
+        verify(userRepository).save(any(User.class));
+        verify(emailService).saveNotificationPreference(eq(user.getId()), eq(true), eq(registerRequest.getEmail()));
+    }
+
 }
