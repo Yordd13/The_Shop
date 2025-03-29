@@ -105,8 +105,8 @@ public class ProductService {
             if(!product.isRemoved() && product.getQuantity() > 0) {
                 product.setVisible(true);
                 result.set(true);
+                productRepository.save(product);
             }
-            productRepository.save(product);
         });
 
         return result.get();
