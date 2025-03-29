@@ -1,11 +1,13 @@
 package app.user;
 
 import app.email.service.EmailService;
+import app.exception.DomainException;
 import app.exception.RegistrationException;
 import app.order.model.Order;
 import app.orderItem.model.OrderItem;
 import app.orderItem.service.OrderItemService;
 import app.products.service.ProductService;
+import app.security.AuthenticationDetails;
 import app.user.model.User;
 import app.user.model.UserRole;
 import app.user.repository.UserRepository;
@@ -17,7 +19,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.context.SecurityContextHolder;
+import static org.assertj.core.api.Assertions.assertThat;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
@@ -408,4 +411,108 @@ public class UserServiceTest {
         verify(emailService).saveNotificationPreference(eq(user.getId()), eq(true), eq(registerRequest.getEmail()));
     }
 
+
+    @Test
+    void givenExistingUser_whenLoadUserByEmail_thenThrowException() {
+
+        //Given
+        String email = "email@gmail.com";
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        //When and Then
+        assertThrows(DomainException.class, () -> userService.loadUserByUsername(email));
+    }
+
+    @Test
+    void givenExistingUser_whenLoadUserByEmail_thenReturnCorrectAuthenticationMetadata(){
+
+        //Given
+        String email = "email@gmail.com";
+        User user = User.builder()
+                .id(UUID.randomUUID())
+                .isActive(true)
+                .password("123456789")
+                .roles(new ArrayList<>(List.of(UserRole.ADMIN)))
+                .build();
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+
+        //When
+        UserDetails userDetails = userService.loadUserByUsername(email);
+
+        //Then
+        assertInstanceOf(AuthenticationDetails.class, userDetails);
+        AuthenticationDetails result = (AuthenticationDetails) userDetails;
+        assertEquals(user.getId(), result.getUserId());
+        assertEquals(email, result.getUsername());
+        assertEquals(user.getPassword(), result.getPassword());
+        assertEquals(user.isActive(), result.isActive());
+        assertTrue(user.getRoles().contains(UserRole.ADMIN));
+        assertThat(result.getAuthorities()).hasSize(1);
+        assertEquals("ROLE_ADMIN", result.getAuthorities().iterator().next().getAuthority());
+    }
+
+    @Test
+    void givenExistingUserThatIsNotBannedFromSelling_whenChangeBanFromSelling_thenBanHimFromSellingAndHideHisProductsAndDeleteOrderItemsAndRemoveSellerRole(){
+
+        //Given
+        User user = User.builder()
+                .isBannedFromSelling(false)
+                .roles(new ArrayList<>(List.of(UserRole.SELLER)))
+                .build();
+
+        //When
+        userService.changeBanFromSelling(user);
+
+        //Then
+        assertTrue(user.isBannedFromSelling());
+        assertFalse(user.getRoles().contains(UserRole.SELLER));
+
+        verify(productService).deleteProductsByUser(user);
+        verify(orderItemService).deleteOrderItemsByUserThatAreNull(user);
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    void givenExistingUserThatIsBannedFromSelling_whenChangeBanFromSelling_thenUnbanHimAndReassignSellerRoleAndShowHisProductsIfHeHas() {
+
+        // Given
+        User user = User.builder()
+                .isBannedFromSelling(true)
+                .roles(new ArrayList<>(List.of(UserRole.USER)))
+                .build();
+
+        when(productService.setProductsToBeVisibleAgain(user)).thenReturn(true);
+
+        // When
+        userService.changeBanFromSelling(user);
+
+        // Then
+        assertFalse(user.isBannedFromSelling());
+        assertTrue(user.getRoles().contains(UserRole.SELLER));
+
+        verify(productService).setProductsToBeVisibleAgain(user);
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    void givenExistingUserThatIsBannedFromSelling_whenChangeBanFromSelling_thenUnbanHimWithoutReassigningSellerRoleAndHeHasNoProducts() {
+
+        // Given
+        User user = User.builder()
+                .isBannedFromSelling(true)
+                .roles(new ArrayList<>(List.of(UserRole.USER)))
+                .build();
+
+        when(productService.setProductsToBeVisibleAgain(user)).thenReturn(false);
+
+        // When
+        userService.changeBanFromSelling(user);
+
+        // Then
+        assertFalse(user.isBannedFromSelling());
+        assertFalse(user.getRoles().contains(UserRole.SELLER));
+
+        verify(productService).setProductsToBeVisibleAgain(user);
+        verify(userRepository).save(user);
+    }
 }
