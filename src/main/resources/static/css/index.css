@@ -2,7 +2,7 @@ body {
     font-family: 'Lato', sans-serif;
     margin: 0;
     padding: 0;
-    background: url('/static/images/online-shopping-4532460.jpg') no-repeat center center/cover;
+    background: url('/images/online-shopping-4532460.jpg') no-repeat center center/cover;
     display: flex;
     justify-content: center;
     align-items: center;

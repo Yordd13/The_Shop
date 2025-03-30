@@ -32,23 +32,6 @@ public class CategoryController {
         this.userService = userService;
         this.productService = productService;
     }
-    @GetMapping()
-    public ModelAndView getCategoryPage(@AuthenticationPrincipal AuthenticationDetails authenticationDetails) {
-
-        User user = userService.getById(authenticationDetails.getUserId());
-        int cartQuantity = userService.getOrderQuantity(user);
-
-        List<Category> categories = categoryService.getAllCategories();
-        Map<UUID, Integer> activeProductCounts = categoryService.getActiveProductsCount();
-
-        ModelAndView modelAndView = new ModelAndView("home");
-        modelAndView.addObject("user", user);
-        modelAndView.addObject("categoryList",categories);
-        modelAndView.addObject("cartQuantity", cartQuantity);
-        modelAndView.addObject("activeProductCounts", activeProductCounts);
-
-        return modelAndView;
-    }
 
     @GetMapping("/{name}")
     public ModelAndView getCategory(@PathVariable String name, @RequestParam(name = "search", required = false) String search, @AuthenticationPrincipal AuthenticationDetails authenticationDetails) {

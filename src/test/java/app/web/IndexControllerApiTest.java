@@ -2,6 +2,8 @@ package app.web;
 
 import app.category.service.CategoryService;
 import app.products.service.ProductService;
+import app.security.AuthenticationDetails;
+import app.user.model.UserRole;
 import app.user.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +12,13 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.util.List;
+import java.util.UUID;
+
+import static app.TestBuilder.aRandomUser;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -108,6 +115,37 @@ public class IndexControllerApiTest {
                 .andExpect(view().name("register"));
 
         verify(userService,never()).register(any());
+
+    }
+
+    @Test
+    void getAuthenticatedRequestToHome_returnsHomeView() throws Exception {
+
+        when(userService.getById(any())).thenReturn(aRandomUser());
+
+        UUID userId = UUID.randomUUID();
+        AuthenticationDetails principal = new AuthenticationDetails(userId, "User123", "123456789", List.of(UserRole.USER), true);
+        MockHttpServletRequestBuilder request = get("/categories")
+                .with(user(principal));
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(view().name("categories"))
+                .andExpect(model().attributeExists("user"))
+                .andExpect(model().attributeExists("categoryList"))
+                .andExpect(model().attributeExists("cartQuantity"))
+                .andExpect(model().attributeExists("activeProductCounts"));
+        verify(userService, times(1)).getById(userId);
+    }
+
+    @Test
+    void getUnauthenticatedRequestToHome_redirectToLogin() throws Exception {
+
+        MockHttpServletRequestBuilder request = get("/categories");
+
+        mockMvc.perform(request)
+                .andExpect(status().is3xxRedirection());
+        verify(userService, never()).getById(any());
 
     }
 

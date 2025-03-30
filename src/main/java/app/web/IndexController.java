@@ -18,11 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 
 @Controller
 @RequestMapping("/")
@@ -79,4 +77,21 @@ public class IndexController {
         return modelAndView;
     }
 
+    @GetMapping("/categories")
+    public ModelAndView getCategoryPage(@AuthenticationPrincipal AuthenticationDetails authenticationDetails) {
+
+        User user = userService.getById(authenticationDetails.getUserId());
+        int cartQuantity = userService.getOrderQuantity(user);
+
+        List<Category> categories = categoryService.getAllCategories();
+        Map<UUID, Integer> activeProductCounts = categoryService.getActiveProductsCount();
+
+        ModelAndView modelAndView = new ModelAndView("categories");
+        modelAndView.addObject("user", user);
+        modelAndView.addObject("categoryList",categories);
+        modelAndView.addObject("cartQuantity", cartQuantity);
+        modelAndView.addObject("activeProductCounts", activeProductCounts);
+
+        return modelAndView;
+    }
 }
