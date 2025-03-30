@@ -32,7 +32,7 @@ public class OrderItemService {
 
     public void addNewOrderItem(User user, Product product) {
 
-        Optional<OrderItem> orderItemOptional = orderItemRepository.findByProductIdAndUserIdAndVisible(product.getId(), user.getId());
+        Optional<OrderItem> orderItemOptional = orderItemRepository.findByProductIdAndUserIdAndOrderIsNull(product.getId(), user.getId());
 
         if(orderItemOptional.isEmpty()) {
             if (product.getQuantity() <= 0) {
@@ -68,8 +68,8 @@ public class OrderItemService {
         OrderItem orderItem = getOrderItem(orderItemId);
         if(orderItem.getQuantity() < orderItem.getProduct().getQuantity()) {
             orderItem.setQuantity(orderItem.getQuantity() + 1);
+            orderItemRepository.save(orderItem);
         }
-        orderItemRepository.save(orderItem);
     }
 
     public void decreaseQuantity(UUID orderItemId) {
