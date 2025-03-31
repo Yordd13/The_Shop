@@ -59,4 +59,8 @@ public class OrderService {
         return orderRepository.findById(orderId).orElseThrow(()
                 -> new DomainException("Cannot find order with id: " + orderId));
     }
+
+    public List<Order> getOrdersByUser(User user){
+        return orderRepository.findAllByBuyer(user);
+    }
 }

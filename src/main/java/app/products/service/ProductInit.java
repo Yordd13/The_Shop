@@ -6,6 +6,7 @@ import app.user.service.UserService;
 import app.web.dto.NewProductRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ import java.math.BigDecimal;
 
 @Component
 @Order(3)
+@Profile("!test")
 public class ProductInit implements CommandLineRunner {
 
     private final ProductService productService;
