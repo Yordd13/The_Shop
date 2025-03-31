@@ -27,9 +27,9 @@ public class UserController {
     private final EmailService emailService;
 
     @Autowired
-    public UserController(UserService userService, EmailService emailService, EmailService emailService1) {
+    public UserController(UserService userService, EmailService emailService) {
         this.userService = userService;
-        this.emailService = emailService1;
+        this.emailService = emailService;
     }
 
     @GetMapping("/profile/{username}")
