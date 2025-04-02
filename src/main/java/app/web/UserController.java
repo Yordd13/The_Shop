@@ -94,7 +94,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/users/toggle-status/{username}")
+    @GetMapping("/toggle-status/{username}")
     public String changeStatus(@PathVariable String username){
 
         User user = userService.getByUsername(username);
@@ -104,7 +104,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/users/toggle-ban/{username}")
+    @GetMapping("/toggle-ban/{username}")
     public String changeBan(@PathVariable String username){
 
         User user = userService.getByUsername(username);
@@ -114,7 +114,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/users/toggle-role/{username}")
+    @GetMapping("/toggle-role/{username}")
     public String changeRole(@PathVariable String username , @AuthenticationPrincipal AuthenticationDetails authenticationDetails){
 
         User currentUser = userService.getById(authenticationDetails.getUserId());

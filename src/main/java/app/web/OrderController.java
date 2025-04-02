@@ -4,7 +4,6 @@ import app.order.model.Order;
 import app.order.service.OrderService;
 import app.orderItem.model.OrderItem;
 import app.orderItem.service.OrderItemService;
-import app.products.service.ProductService;
 import app.security.AuthenticationDetails;
 import app.user.model.User;
 import app.user.service.UserService;
@@ -30,7 +29,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @Autowired
-    public OrderController(UserService userService, ProductService productService, OrderItemService orderItemService, OrderService orderService) {
+    public OrderController(UserService userService, OrderItemService orderItemService, OrderService orderService) {
         this.userService = userService;
         this.orderItemService = orderItemService;
         this.orderService = orderService;

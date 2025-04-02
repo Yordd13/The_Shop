@@ -32,7 +32,7 @@
     <td th:text="${user.username}"></td>
     <td th:text="${user.email}"></td>
     <td>
-      <a th:href="@{'/users/users/toggle-status/'+${user.username}}">
+      <a th:href="@{'/users/toggle-status/'+${user.username}}">
         <button
                 type="submit"
                 th:class="${user.isActive()} ? 'unban-button' : 'ban-button'"
@@ -41,7 +41,7 @@
       </a>
     </td>
     <td>
-      <a th:href="@{'/users/users/toggle-ban/'+${user.username}}">
+      <a th:href="@{'/users/toggle-ban/'+${user.username}}">
         <button
                 type="submit"
                 th:class="${user.isBannedFromSelling()} ? 'ban-button' : 'unban-button'"
@@ -50,7 +50,7 @@
       </a>
     </td>
     <td>
-      <a th:href="@{'/users/users/toggle-role/'+${user.username}}">
+      <a th:href="@{'/users/toggle-role/'+${user.username}}">
         <button
               type="submit"
               class="switch-button"
