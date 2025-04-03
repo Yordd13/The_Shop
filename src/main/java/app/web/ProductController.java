@@ -13,7 +13,9 @@ import app.web.dto.UpdateQuantityRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -100,6 +102,8 @@ public class ProductController {
         // Add new product
         productService.addNewProduct(newProductRequest, user);
         userService.addSellerRole(user);
+        Authentication newAuth = authenticationDetails.update(user);
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
 
         return new ModelAndView("redirect:/categories");
     }

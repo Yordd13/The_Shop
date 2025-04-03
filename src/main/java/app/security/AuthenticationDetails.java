@@ -1,8 +1,11 @@
 package app.security;
 
+import app.user.model.User;
 import app.user.model.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -57,5 +60,22 @@ public class AuthenticationDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return isActive;
+    }
+
+    public Authentication update(User user) {
+
+        AuthenticationDetails updatedAuthDetails = new AuthenticationDetails(
+                user.getId(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getRoles(),
+                user.isActive()
+        );
+
+        return new UsernamePasswordAuthenticationToken(
+                updatedAuthDetails,
+                updatedAuthDetails.getPassword(),
+                updatedAuthDetails.getAuthorities()
+        );
     }
 }

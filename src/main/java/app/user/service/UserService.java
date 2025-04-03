@@ -16,6 +16,10 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -154,27 +158,33 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public void changeStatus(User user) {
+    public boolean changeStatus(User user,String currentUserUsername) {
         user.setActive(!user.isActive());
         userRepository.save(user);
+
+        return currentUserUsername.equals(user.getUsername());
     }
 
     @Transactional
-    public void changeBanFromSelling(User user) {
+    public boolean changeBanFromSelling(User user, String currentUserUsername) {
         user.setBannedFromSelling(!user.isBannedFromSelling());
 
         if(user.isBannedFromSelling()){
             productService.deleteProductsByUser(user);
             orderItemService.deleteOrderItemsByUserThatAreNull(user);
             user.getRoles().remove(UserRole.SELLER);
+            user.getRoles().add(UserRole.USER);
         } else{
             boolean result = productService.setProductsToBeVisibleAgain(user);
             if(result){
+                user.getRoles().remove(UserRole.USER);
                 user.getRoles().add(UserRole.SELLER);
             }
         }
 
         userRepository.save(user);
+
+        return currentUserUsername.equals(user.getUsername());
     }
 
     public boolean changeRole(User user, User currentUser) {
@@ -188,6 +198,6 @@ public class UserService implements UserDetailsService {
 
         userRepository.save(user);
 
-        return user.getUsername().equals(currentUser.getUsername());
+        return currentUser.getUsername().equals(user.getUsername());
     }
 }

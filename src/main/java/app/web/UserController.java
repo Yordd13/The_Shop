@@ -10,7 +10,9 @@ import app.web.mapper.DtoMapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -95,34 +97,48 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/toggle-status/{username}")
-    public String changeStatus(@PathVariable String username){
+    public String changeStatus(@PathVariable String username, @AuthenticationPrincipal AuthenticationDetails authenticationDetails){
 
         User user = userService.getByUsername(username);
-        userService.changeStatus(user);
+        boolean selfChange = userService.changeStatus(user,authenticationDetails.getUsername());
+
+        if(selfChange){
+            Authentication newAuth = authenticationDetails.update(user);
+            SecurityContextHolder.getContext().setAuthentication(newAuth);
+            return "redirect:/categories";
+        }
 
         return "redirect:/dashboard/admin";
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/toggle-ban/{username}")
-    public String changeBan(@PathVariable String username){
+    public String changeBan(@PathVariable String username,@AuthenticationPrincipal AuthenticationDetails authenticationDetails){
 
         User user = userService.getByUsername(username);
-        userService.changeBanFromSelling(user);
+        boolean selfChange = userService.changeBanFromSelling(user,authenticationDetails.getUsername());
+        if(selfChange){
+            Authentication newAuth = authenticationDetails.update(user);
+            SecurityContextHolder.getContext().setAuthentication(newAuth);
+            return "redirect:/categories";
+        }
 
         return "redirect:/dashboard/admin";
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/toggle-role/{username}")
-    public String changeRole(@PathVariable String username , @AuthenticationPrincipal AuthenticationDetails authenticationDetails){
+    public String changeRole(@PathVariable String username, @AuthenticationPrincipal AuthenticationDetails authenticationDetails){
 
         User currentUser = userService.getById(authenticationDetails.getUserId());
-        User user = userService.getByUsername(username);
-        boolean selfRoleChange = userService.changeRole(user,currentUser);
 
-        if(selfRoleChange){
-            return "redirect:/logout";
+        User user = userService.getByUsername(username);
+        boolean selfChangeRole = userService.changeRole(user,currentUser);
+
+        if(selfChangeRole){
+            Authentication newAuth = authenticationDetails.update(user);
+            SecurityContextHolder.getContext().setAuthentication(newAuth);
+            return "redirect:/categories";
         }
 
         return "redirect:/dashboard/admin";

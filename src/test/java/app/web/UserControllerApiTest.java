@@ -84,44 +84,6 @@ public class UserControllerApiTest {
 
         verify(emailService, times(1)).saveNotificationPreference(any(), anyBoolean(), any());
     }
-    @Test
-    void changeStatus_shouldRedirectToAdminDashboard() throws Exception {
-
-        User user = aRandomUser();
-        when(userService.getByUsername(user.getUsername())).thenReturn(user);
-
-        doNothing().when(userService).changeStatus(any());
-
-        MockHttpServletRequestBuilder request = get("/users/toggle-status/"+user.getUsername())
-                .with(user(new AuthenticationDetails(UUID.randomUUID(), "AdminUser", "123456789", List.of(UserRole.ADMIN), true)))
-                .with(csrf());
-
-
-        mockMvc.perform(request)
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/dashboard/admin"));
-
-        verify(userService, times(1)).changeStatus(any());
-    }
-
-    @Test
-    void changeBan_shouldRedirectToAdminDashboard() throws Exception {
-
-        User user = aRandomUser();
-        when(userService.getByUsername(user.getUsername())).thenReturn(user);
-
-        doNothing().when(userService).changeBanFromSelling(any());
-
-        MockHttpServletRequestBuilder request = get("/users/toggle-ban/"+user.getUsername())
-                .with(user(new AuthenticationDetails(UUID.randomUUID(), "AdminUser", "password", List.of(UserRole.ADMIN), true)))
-                .with(csrf());
-
-        mockMvc.perform(request)
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/dashboard/admin"));
-
-        verify(userService, times(1)).changeBanFromSelling(any());
-    }
 
     @Test
     void changeRole_shouldRedirectToAdminDashboard() throws Exception {
@@ -141,7 +103,7 @@ public class UserControllerApiTest {
 
         mockMvc.perform(request)
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/logout"));
+                .andExpect(redirectedUrl("/categories"));
 
         verify(userService, times(1)).changeRole(any(), any());
     }

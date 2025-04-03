@@ -223,7 +223,7 @@ public class UserServiceTest {
                 .build();
 
         //When
-        userService.changeStatus(user);
+        userService.changeStatus(user,"");
 
         //Then
         assertFalse(user.isActive());
@@ -241,7 +241,7 @@ public class UserServiceTest {
                 .build();
 
         //When
-        userService.changeStatus(user);
+        userService.changeStatus(user,"");
 
         //Then
         assertTrue(user.isActive());
@@ -461,7 +461,7 @@ public class UserServiceTest {
                 .build();
 
         //When
-        userService.changeBanFromSelling(user);
+        userService.changeBanFromSelling(user,"");
 
         //Then
         assertTrue(user.isBannedFromSelling());
@@ -484,7 +484,7 @@ public class UserServiceTest {
         when(productService.setProductsToBeVisibleAgain(user)).thenReturn(true);
 
         // When
-        userService.changeBanFromSelling(user);
+        userService.changeBanFromSelling(user,"");
 
         // Then
         assertFalse(user.isBannedFromSelling());
@@ -506,7 +506,7 @@ public class UserServiceTest {
         when(productService.setProductsToBeVisibleAgain(user)).thenReturn(false);
 
         // When
-        userService.changeBanFromSelling(user);
+        userService.changeBanFromSelling(user,"");
 
         // Then
         assertFalse(user.isBannedFromSelling());
